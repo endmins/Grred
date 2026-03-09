@@ -23,6 +23,7 @@
         }
 
         body.light-mode {
+            /* LIGHT MODE FIX */
             --glass-bg: rgba(255, 255, 255, 0.92);
             --glass-border: rgba(0, 0, 0, 0.08);
             --text-primary: #000000;
@@ -227,6 +228,12 @@
             const p = Math.round((count / schedules.length) * 100);
             document.getElementById('progress-bar').style.width = p + '%';
             document.getElementById('progress-text').innerText = p + '%';
+            
+            // AUTOMATIC END CHECK
+            if (count === schedules.length) {
+                alert("Giữa kì 2 đã kết thúc, hãy chờ đợi cho đến khi Coni và Surface Stud update!");
+                window.location.href = "https://halong.vercel.app/dfk2";
+            }
         }
 
         function updateCountdown() {
@@ -239,44 +246,34 @@
             document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
         }
 
-        // --- EASTER EGGS ---
         const triggerRainbow = () => { document.body.classList.toggle('rainbow-mode'); };
         const triggerFlip = () => { document.body.classList.toggle('flip-mode'); };
-        
         let holdTimer;
         document.getElementById('next-exam-section').addEventListener('mousedown', () => holdTimer = setTimeout(triggerRainbow, 2000));
         document.getElementById('next-exam-section').addEventListener('mouseup', () => clearTimeout(holdTimer));
         document.getElementById('next-exam-section').addEventListener('touchstart', () => holdTimer = setTimeout(triggerRainbow, 2000));
         document.getElementById('next-exam-section').addEventListener('touchend', () => clearTimeout(holdTimer));
-
         document.getElementById('credit-7a4').addEventListener('click', (e) => {
             window.clickCnt = (window.clickCnt || 0) + 1;
             if (window.clickCnt === 7) { confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 } }); window.clickCnt = 0; }
         });
-
-        // Money Rain Egg (Long Press on Footer)
         document.getElementById('credit-7a4').addEventListener('mousedown', () => holdTimer = setTimeout(() => {
             confetti({ particleCount: 100, spread: 100, origin: { y: 0.8 }, scalar: 2, shapes: ['text'], shapeOptions: { text: { value: ['💵', '💰', '7A4'] } } });
         }, 2000));
         document.getElementById('credit-7a4').addEventListener('touchstart', () => holdTimer = setTimeout(() => {
             confetti({ particleCount: 100, spread: 100, origin: { y: 0.8 }, scalar: 2, shapes: ['text'], shapeOptions: { text: { value: ['💵', '💰', '7A4'] } } });
         }, 2000));
-
-        // Flip Mode (Mobile Backup)
         document.getElementById('progress-label').addEventListener('click', () => {
             window.flipCnt = (window.tapCnt || 0) + 1;
             setTimeout(() => window.flipCnt = 0, 1000);
             if (window.flipCnt === 5) triggerFlip();
         });
-
         function checkMidnight() {
             const h = new Date().getHours();
             if (h >= 0 && h < 5) document.getElementById('quote-text').innerText = "Ngủ đi các thiên tài 7A4, mai còn đi thi! 😴";
         }
-
         let konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let kIdx = 0;
-        let inputKeys = "";
+        let kIdx = 0; let inputKeys = "";
         document.addEventListener('keydown', (e) => {
             if (e.key === konami[kIdx]) { kIdx++; if (kIdx === konami.length) { triggerRainbow(); kIdx = 0; } } else { kIdx = 0; }
             inputKeys += e.key; if (inputKeys.includes("flip")) { triggerFlip(); inputKeys = ""; }
