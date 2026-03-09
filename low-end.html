@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7A4 - CONI | Lite Mode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .date-box {
+            background: #0071e3;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 50px;
+        }
+        .time {
+            color: #b28900;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bar-bg { background: #ddd; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
+        .bar-fill { background: #ffcc00; height: 100%; width: 0%; }
+        .btn-back { display: block; text-align: center; color: #0071e3; text-decoration: none; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Lịch Thi (Bản Rút Gọn)</h1>
+        <p>Dành cho máy yếu / Tiết kiệm pin</p>
+    </div>
+
+    <div id="progress-area">
+        <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
+        <p id="progress-text" style="text-align: right; font-weight: bold;">0%</p>
+    </div>
+
+    <div id="list"></div>
+
+    <a href="index.html" class="btn-back">← Quay lại bản cao cấp</a>
+
+    <script>
+        const data = [
+            { date: "2026-03-10", sub: "Công nghệ", time: "14:25 - 15:10", day: "T3" },
+            { date: "2026-03-11", sub: "Lịch sử/Địa lý", time: "14:25 - 16:05", day: "T4" },
+            { date: "2026-03-12", sub: "GDCD", time: "14:25 - 15:10", day: "T5" },
+            { date: "2026-03-13", sub: "KHTN", time: "14:25 - 15:55", day: "T6" },
+            { date: "2026-03-16", sub: "Tiếng Anh", time: "13:30 - 14:30", day: "T2" },
+            { date: "2026-03-18", sub: "Ngữ văn", time: "13:30 - 17:00", day: "T4" },
+            { date: "2026-03-19", sub: "Toán", time: "13:30 - 17:00", day: "T5" }
+        ];
+
+        const list = document.getElementById('list');
+        const now = new Date();
+        let finished = 0;
+
+        list.innerHTML = data.map(item => {
+            const isPast = now > new Date(item.date + 'T17:00:00');
+            if(isPast) finished++;
+            return `
+                <div class="card" style="${isPast ? 'opacity: 0.5' : ''}">
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <div class="date-box">
+                            <div style="font-size: 0.7em;">${item.day}</div>
+                            <div style="font-size: 1.2em; font-weight: bold;">${item.date.split('-')[2]}</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: bold;">${item.sub}</div>
+                            <div class="time">${item.time}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const p = Math.round((finished / data.length) * 100);
+        document.getElementById('progress-bar').style.width = p + '%';
+        document.getElementById('progress-text').innerText = p + '% Hoàn thành';
+    </script>
+</body>
+</html>
