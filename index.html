@@ -7,129 +7,123 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.5);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.3);
             --text-primary: #1d1d1f;
-            --text-secondary: #86868b;
+            --text-secondary: #48484a;
             --accent: #0071e3;
-            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .dark-mode {
-            --glass-bg: rgba(28, 28, 30, 0.6);
+            --glass-bg: rgba(28, 28, 30, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-primary: #f5f5f7;
             --text-secondary: #a1a1a6;
             --accent: #0a84ff;
-            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+            background-image: url('1.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: var(--text-primary);
             transition: all 0.5s ease;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
         /* Apple Glassmorphism */
         .apple-glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(50px) saturate(200%);
-            -webkit-backdrop-filter: blur(50px) saturate(200%);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
             border: 1px solid var(--glass-border);
             box-shadow: var(--card-shadow);
             border-radius: 24px;
         }
 
         .shimmer-card {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .shimmer-card:hover {
             transform: scale(1.02);
-            background: rgba(255, 255, 255, 0.7);
-        }
-        .dark-mode .shimmer-card:hover {
-            background: rgba(44, 44, 46, 0.8);
         }
 
         /* Toggle Button */
         .toggle-switch {
-            width: 54px; height: 30px;
-            background: rgba(120, 120, 128, 0.32);
+            width: 50px; height: 28px;
+            background: rgba(120, 120, 128, 0.3);
             border-radius: 100px;
             position: relative;
             cursor: pointer;
-            transition: background 0.3s;
         }
         .toggle-dot {
-            width: 26px; height: 26px;
+            width: 24px; height: 24px;
             background: white;
             border-radius: 100px;
             position: absolute;
             top: 2px; left: 2px;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
         }
-        .dark-mode .toggle-dot { transform: translateX(24px); }
+        .dark-mode .toggle-dot { transform: translateX(22px); }
 
         /* Tabs */
         .tab-group {
-            background: rgba(120, 120, 128, 0.12);
-            padding: 3px;
-            border-radius: 12px;
+            background: rgba(120, 120, 128, 0.15);
+            padding: 4px;
+            border-radius: 14px;
             display: flex;
         }
         .tab-item {
-            padding: 8px 24px;
-            border-radius: 9px;
+            padding: 10px 0;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             transition: all 0.2s;
             flex: 1;
             text-align: center;
+            color: var(--text-secondary);
         }
         .tab-active {
             background: white;
             color: black;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .dark-mode .tab-active { background: #636366; color: white; }
 
         /* Music Bar */
         .music-widget {
             position: fixed;
-            bottom: 24px; left: 50%;
+            bottom: 30px; left: 50%;
             transform: translateX(-50%);
-            width: 90%; max-width: 400px;
+            width: 90%; max-width: 380px;
             z-index: 100;
-            padding: 12px 16px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        /* Hide YouTube Iframe but keep it for audio */
+        #yt-player {
+            position: absolute;
+            width: 1px; height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <!-- Top Navigation -->
-    <nav class="max-w-4xl mx-auto flex justify-between items-center mb-16">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 apple-glass flex items-center justify-center">
-                <i class="ph-fill ph-calendar-check text-blue-500 text-xl"></i>
-            </div>
-            <div>
-                <span class="text-[10px] font-black uppercase tracking-widest opacity-40">Hệ thống</span>
-                <h2 class="font-extrabold text-lg tracking-tight">7A4 CONI</h2>
-            </div>
-        </div>
-        
+    <nav class="max-w-4xl mx-auto flex justify-end items-center mb-16">
         <div class="toggle-switch" onclick="toggleTheme()">
             <div class="toggle-dot"></div>
         </div>
@@ -138,14 +132,6 @@
     <!-- Main Content -->
     <main class="max-w-3xl mx-auto">
         
-        <!-- Intro -->
-        <header class="text-center mb-12">
-            <span class="text-blue-500 font-bold text-sm tracking-tight mb-2 block">Lịch Thi Giữa HKII</span>
-            <p class="text-secondary max-w-md mx-auto text-lg font-medium leading-tight">
-                Hãy chuẩn bị thật tốt. Thành công của <span class="text-primary font-bold">7A4</span> là kết quả của sự nỗ lực không ngừng.
-            </p>
-        </header>
-
         <!-- Countdown -->
         <section class="apple-glass p-8 mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="text-center md:text-left">
@@ -180,7 +166,7 @@
         </div>
 
         <!-- Quote -->
-        <div class="text-center mb-12 px-6 py-4 apple-glass mx-auto max-w-lg border-none shadow-sm">
+        <div class="text-center mb-12 px-6 py-4 apple-glass mx-auto max-w-lg">
             <p id="quote-text" class="text-sm italic font-medium opacity-70">"Thành công là tổng hợp của những nỗ lực nhỏ bé."</p>
         </div>
 
@@ -199,26 +185,61 @@
 
     </main>
 
-    <!-- Music Player (iOS Style) -->
-    <div class="music-widget apple-glass flex items-center justify-between">
+    <!-- Music Player -->
+    <div class="music-widget apple-glass">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-cover bg-center shadow-md" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop');"></div>
+            <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white">
+                <i class="ph-fill ph-music-notes"></i>
+            </div>
             <div>
-                <h4 class="text-xs font-bold leading-none mb-1">Study Lofi</h4>
-                <p class="text-[10px] opacity-60">Chill Music for Exam</p>
+                <h4 class="text-xs font-bold leading-none mb-1">YouTube Chill</h4>
+                <p class="text-[10px] opacity-60">Nhạc thư giãn học tập</p>
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <button onclick="toggleMusic()" class="w-8 h-8 flex items-center justify-center">
-                <i class="ph-fill ph-play text-2xl" id="play-icon"></i>
-            </button>
-        </div>
-        <audio id="bg-music" loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-        </audio>
+        <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full">
+            <i class="ph-fill ph-play text-xl" id="play-icon"></i>
+        </button>
     </div>
 
+    <!-- Hidden YouTube Player -->
+    <div id="yt-player"></div>
+
     <script>
+        // Load YouTube IFrame Player API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                height: '0',
+                width: '0',
+                videoId: 'yJ6Lbsmb1lY',
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready
+        }
+
+        let isPlaying = false;
+        function toggleMusic() {
+            const icon = document.getElementById('play-icon');
+            if (isPlaying) {
+                player.pauseVideo();
+                icon.className = 'ph-fill ph-play text-xl';
+            } else {
+                player.playVideo();
+                icon.className = 'ph-fill ph-pause text-xl';
+            }
+            isPlaying = !isPlaying;
+        }
+
         const schedules = {
             7: [
                 { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45p", icon: "ph-cpu" },
@@ -247,23 +268,9 @@
         ];
 
         let currentGrade = 7;
-        let isPlaying = false;
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
-        }
-
-        function toggleMusic() {
-            const audio = document.getElementById('bg-music');
-            const icon = document.getElementById('play-icon');
-            if (isPlaying) {
-                audio.pause();
-                icon.className = 'ph-fill ph-play text-2xl';
-            } else {
-                audio.play();
-                icon.className = 'ph-fill ph-pause text-2xl';
-            }
-            isPlaying = !isPlaying;
         }
 
         function setGrade(grade) {
@@ -284,7 +291,7 @@
                 const d = item.date.split('-');
                 
                 return `
-                <div class="apple-glass p-5 flex items-center justify-between shimmer-card ${isToday ? 'border-blue-500 border-2' : ''}">
+                <div class="apple-glass p-5 flex items-center justify-between shimmer-card ${isToday ? 'ring-2 ring-blue-500' : ''}">
                     <div class="flex items-center gap-5">
                         <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex flex-col items-center justify-center">
                             <span class="text-[9px] font-black uppercase opacity-50">${item.day}</span>
@@ -292,9 +299,7 @@
                         </div>
                         <div>
                             <h4 class="font-bold text-lg leading-tight mb-1">${item.sub}</h4>
-                            <div class="flex items-center gap-3 opacity-50 text-[10px] font-bold">
-                                <span><i class="${item.icon}"></i> THỜI GIAN: ${item.time}</span>
-                            </div>
+                            <p class="opacity-50 text-[10px] font-bold uppercase"><i class="${item.icon}"></i> ${item.time}</p>
                         </div>
                     </div>
                     ${isToday ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full">HÔM NAY</span>' : ''}
@@ -327,7 +332,6 @@
             document.getElementById('quote-text').innerText = `"${q}"`;
         }, 8000);
 
-        // Init
         setGrade(7);
         setInterval(updateCountdown, 1000);
     </script>
