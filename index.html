@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=devicLowidth, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>7A4 • Coni • Surface Stud.</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,12 +35,12 @@
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
             background-color: #000;
-            background-image: url('1.png');
+            background-image: url('1.png'); /* Initial Background */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: var(--text-primary);
-            transition: background-color 0.4s ease, color 0.4s ease;
+            transition: background-color 0.4s ease, color 0.4s ease, background-image 0.4s ease;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -92,12 +92,6 @@
             width: 92%; max-width: 380px;
             z-index: 1000; padding: 12px 20px;
         }
-
-        .tab-group { background: rgba(120, 120, 128, 0.12); padding: 4px; border-radius: 16px; display: flex; }
-        .tab-btn { flex: 1; padding: 10px 0; border-radius: 12px; font-size: 14px; font-weight: 700; transition: 0.3s; color: var(--text-secondary); }
-        .tab-btn.active { background: white; color: black; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        body.light-mode .tab-btn.active { background: var(--blue-box); color: white; }
-        .dark-mode-manual .tab-btn.active { background: #636366; color: white; }
 
         /* Liquid PC */
         .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: url(#goo); opacity: 0.4; pointer-events: none; }
@@ -158,24 +152,17 @@
             <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
         </div>
 
-        <div class="flex justify-center mb-10">
-            <div class="tab-group w-full max-w-sm">
-                <button onclick="setGrade(7)" id="tab-7" class="tab-btn active">Khối 7 (Chiều)</button>
-                <button onclick="setGrade(8)" id="tab-8" class="tab-btn">Khối 8 (Chiều)</button>
-            </div>
-        </div>
-
         <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-40"></div>
 
         <footer class="text-center pb-48 opacity-80">
             <div class="h-[1px] w-12 bg-gray-400 opacity-20 mx-auto mb-8"></div>
             <div class="flex flex-col items-center gap-4">
                 <h2 class="text-2xl font-black tracking-tighter text-primary">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
-                <a href="low-end" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-600 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
-                    <i class="ph-bold ph-lightning"></i> LAG? Bấm để vào trang web tối ưu
+                <a href="low-end.html" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-600 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
+                    <i class="ph-bold ph-lightning"></i> LAG? Bấm để tối ưu
                 </a>
             </div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary">© 2026 Coni</p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary">© 2026 Collaboration Edition</p>
         </footer>
     </main>
 
@@ -185,8 +172,8 @@
                 <i class="ph-fill ph-music-notes text-lg"></i>
             </div>
             <div>
-                <h4 class="text-[13px] font-bold leading-none mb-1 text-primary"> Bạn Đang muốn học?</h4>
-                <p class="text-[10px] opacity-50 italic text-secondary">Surface Studio • Coni</p>
+                <h4 class="text-[13px] font-bold leading-none mb-1 text-primary">YouTube Chill</h4>
+                <p class="text-[10px] opacity-50 italic text-secondary">Study Mode Active</p>
             </div>
         </div>
         <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/10 rounded-full">
@@ -211,47 +198,30 @@
             isPlaying = !isPlaying;
         }
 
-        const schedules = {
-            7: [
-                { date: "2026-03-10", day: "T3", sub: "Công nghệ", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-11", day: "T4", sub: "Lịch sử", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-11", day: "T4", sub: "Địa lí", time: "15:20 - 16:05", label: "Tiết 3", split: false },
-                { date: "2026-03-12", day: "T5", sub: "GDCD", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-13", day: "T6", sub: "KHTN", time: "14:25 - 15:55", label: "90 phút", split: false },
-                { date: "2026-03-16", day: "T2", sub: "Tiếng Anh 7", time: "13:30 - 14:30", label: "60 phút", split: true },
-                { date: "2026-03-18", day: "T4", sub: "Ngữ văn 7", time: "13:30 - 15:00", label: "90 phút", split: true },
-                { date: "2026-03-19", day: "T5", sub: "Toán 7", time: "13:30 - 15:00", label: "90 phút", split: true },
-            ],
-            8: [
-                { date: "2026-03-10", day: "T3", sub: "Công nghệ", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-11", day: "T4", sub: "Lịch sử", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-11", day: "T4", sub: "Địa lí", time: "15:20 - 16:05", label: "Tiết 3", split: false },
-                { date: "2026-03-12", day: "T5", sub: "GDCD", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-13", day: "T6", sub: "KHTN", time: "14:25 - 15:55", label: "90 phút", split: false },
-                { date: "2026-03-17", day: "T3", sub: "Tiếng Anh 8", time: "13:30 - 14:30", label: "60 phút", split: true },
-                { date: "2026-03-18", day: "T4", sub: "Ngữ văn 8", time: "15:30 - 17:00", label: "90 phút", split: true },
-                { date: "2026-03-19", day: "T5", sub: "Toán 8", time: "15:30 - 17:00", label: "90 phút", split: true },
-            ]
-        };
+        const schedules = [
+            { date: "2026-03-10", day: "T3", sub: "Công nghệ", time: "14:25 - 15:10", label: "Tiết 2", split: false },
+            { date: "2026-03-11", day: "T4", sub: "Lịch sử", time: "14:25 - 15:10", label: "Tiết 2", split: false },
+            { date: "2026-03-11", day: "T4", sub: "Địa lí", time: "15:20 - 16:05", label: "Tiết 3", split: false },
+            { date: "2026-03-12", day: "T5", sub: "GDCD", time: "14:25 - 15:10", label: "Tiết 2", split: false },
+            { date: "2026-03-13", day: "T6", sub: "KHTN", time: "14:25 - 15:55", label: "90 phút", split: false },
+            { date: "2026-03-16", day: "T2", sub: "Tiếng Anh 7", time: "13:30 - 14:30", label: "60 phút", split: true },
+            { date: "2026-03-18", day: "T4", sub: "Ngữ văn 7", time: "13:30 - 15:00", label: "90 phút", split: true },
+            { date: "2026-03-19", day: "T5", sub: "Toán 7", time: "13:30 - 15:00", label: "90 phút", split: true },
+        ];
 
-        let currentGrade = 7;
         function toggleTheme() {
-            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.toggle('light-mode');
             const icon = document.getElementById('theme-icon');
-            icon.className = document.body.classList.contains('light-mode') ? 'ph-bold ph-moon-stars text-xl' : 'ph-bold ph-sun-dim text-xl';
-        }
-
-        function setGrade(grade) {
-            currentGrade = grade;
-            document.getElementById('tab-7').classList.toggle('active', grade === 7);
-            document.getElementById('tab-8').classList.toggle('active', grade === 8);
-            render(); updateCountdown(); updateProgress();
+            icon.className = isLight ? 'ph-bold ph-moon-stars text-xl' : 'ph-bold ph-sun-dim text-xl';
+            
+            // Automatic Background Change
+            document.body.style.backgroundImage = isLight ? "url('2.png')" : "url('1.png')";
         }
 
         function render() {
             const grid = document.getElementById('schedule-grid');
             const now = new Date(); const today = now.toISOString().split('T')[0];
-            grid.innerHTML = schedules[currentGrade].map(item => {
+            grid.innerHTML = schedules.map(item => {
                 let status = ''; const endTime = new Date(item.date + 'T17:00:00');
                 if (now > endTime) status = 'status-past'; else if (item.date === today) status = 'status-today';
                 return `
@@ -269,7 +239,7 @@
                                 <span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>
                                 ${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}
                             </div>
-                            <div class="text-2xl font-black tracking-tighter mt-1" style="color: var(--accent-yellow);">${item.time}</div>
+                            <div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div>
                         </div>
                     </div>
                     ${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}
@@ -278,15 +248,15 @@
         }
 
         function updateProgress() {
-            const data = schedules[currentGrade]; const now = new Date();
-            let count = data.filter(i => now > new Date(i.date + 'T17:00:00')).length;
-            const p = Math.round((count / data.length) * 100);
+            const now = new Date();
+            let count = schedules.filter(i => now > new Date(i.date + 'T17:00:00')).length;
+            const p = Math.round((count / schedules.length) * 100);
             document.getElementById('progress-bar').style.width = p + '%';
             document.getElementById('progress-text').innerText = p + '%';
         }
 
         function updateCountdown() {
-            const data = schedules[currentGrade]; const next = data.find(item => new Date(item.date + 'T13:30:00') > new Date());
+            const next = schedules.find(item => new Date(item.date + 'T13:30:00') > new Date());
             if (!next) { document.getElementById('next-subject').innerText = "Kỳ thi kết thúc!"; return; }
             document.getElementById('next-subject').innerText = next.sub;
             const diff = new Date(next.date + 'T13:30:00') - new Date();
@@ -295,7 +265,10 @@
             document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
         }
 
-        setGrade(7);
+        // Init
+        render();
+        updateCountdown();
+        updateProgress();
         setInterval(updateCountdown, 1000);
     </script>
 </body>
