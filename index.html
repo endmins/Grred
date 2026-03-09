@@ -3,28 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7A4 - CONI | Exam Pro</title>
+    <title>7A4 - CONI | Lịch Thi Chuyên Nghiệp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.45);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.6);
             --text-primary: #1d1d1f;
-            --text-secondary: #48484a;
+            --text-secondary: #424245;
             --accent: #0071e3;
-            --gold: #ffd700;
-            --cyan: #00d9ff;
+            --gold: #b28900;
+            --cyan: #0071e3;
+            --border-sep: rgba(0, 0, 0, 0.1);
         }
 
         .dark-mode {
-            --glass-bg: rgba(28, 28, 30, 0.75);
+            --glass-bg: rgba(28, 28, 30, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-primary: #f5f5f7;
             --text-secondary: #a1a1a6;
-            --gold: #ffcc00;
+            --gold: #ffd700;
             --cyan: #60cdff;
+            --border-sep: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -47,65 +49,41 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        /* Professional Board Sheets (The Cards) */
         .board-sheet {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .status-past {
-            opacity: 0.4;
-            filter: grayscale(0.5);
+            opacity: 0.45;
+            filter: grayscale(0.6);
         }
 
         .status-today {
-            border: 2px solid var(--cyan);
-            box-shadow: 0 0 25px rgba(0, 217, 255, 0.2);
-            background: rgba(0, 217, 255, 0.05);
+            border: 2px solid var(--cyan) !important;
+            box-shadow: 0 0 25px rgba(0, 113, 227, 0.2);
+            background: rgba(0, 113, 227, 0.05);
         }
 
         .time-text {
             color: var(--gold);
             font-weight: 800;
-            text-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
         }
 
-        /* Checkbox Style */
-        .task-check {
-            appearance: none;
-            width: 22px; height: 22px;
-            border: 2px solid rgba(120, 120, 128, 0.4);
-            border-radius: 50%;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s;
-        }
-        .task-check:checked {
-            background-color: var(--accent);
-            border-color: var(--accent);
-        }
-        .task-check:checked::after {
-            content: '✔';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 11px; color: white;
-        }
-
-        /* Original Layout Components */
         .toggle-switch {
-            width: 50px; height: 28px;
-            background: rgba(120, 120, 128, 0.3);
+            width: 52px; height: 30px;
+            background: rgba(120, 120, 128, 0.32);
             border-radius: 100px;
             position: relative;
             cursor: pointer;
         }
         .toggle-dot {
-            width: 24px; height: 24px;
+            width: 26px; height: 26px;
             background: white;
             border-radius: 100px;
             position: absolute;
             top: 2px; left: 2px;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .dark-mode .toggle-dot { transform: translateX(22px); }
 
@@ -114,6 +92,7 @@
             padding: 4px;
             border-radius: 14px;
             display: flex;
+            gap: 4px;
         }
         .tab-item {
             padding: 10px 0;
@@ -123,6 +102,7 @@
             flex: 1;
             text-align: center;
             color: var(--text-secondary);
+            transition: all 0.2s;
         }
         .tab-active {
             background: white;
@@ -131,16 +111,19 @@
         }
         .dark-mode .tab-active { background: #636366; color: white; }
 
+        /* Automatic Progress Bar */
         .progress-bar-bg {
-            background: rgba(120, 120, 128, 0.1);
-            height: 6px;
+            background: rgba(120, 120, 128, 0.15);
+            height: 8px;
             border-radius: 10px;
             overflow: hidden;
         }
         .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--cyan), var(--accent));
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--accent);
+            width: 0%;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--accent);
         }
 
         .music-widget {
@@ -157,7 +140,6 @@
 </head>
 <body class="p-4 md:p-10">
 
-    <!-- Original Nav -->
     <nav class="max-w-4xl mx-auto flex justify-end items-center mb-12">
         <div class="toggle-switch" onclick="toggleTheme()">
             <div class="toggle-dot"></div>
@@ -166,91 +148,91 @@
 
     <main class="max-w-3xl mx-auto">
         
-        <!-- Original Countdown Layout -->
-        <section class="apple-glass p-8 mb-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- Countdown Section -->
+        <section class="apple-glass p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="text-center md:text-left">
-                <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Môn thi tiếp theo</span>
-                <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight text-primary">---</h3>
+                <span class="text-[11px] font-bold uppercase tracking-widest text-secondary block mb-1 opacity-60">Môn thi tiếp theo</span>
+                <h3 id="next-subject" class="text-3xl font-extrabold tracking-tight text-primary">---</h3>
             </div>
             
-            <div class="flex gap-6 items-center">
+            <div class="flex gap-8 items-center">
                 <div class="text-center">
                     <div id="cd-days" class="text-4xl font-extrabold text-primary">00</div>
-                    <span class="text-[9px] uppercase font-bold opacity-40 text-secondary">Ngày</span>
+                    <span class="text-[10px] uppercase font-bold opacity-40 text-secondary">Ngày</span>
                 </div>
                 <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
                     <div id="cd-hours" class="text-4xl font-extrabold text-primary">00</div>
-                    <span class="text-[9px] uppercase font-bold opacity-40 text-secondary">Giờ</span>
+                    <span class="text-[10px] uppercase font-bold opacity-40 text-secondary">Giờ</span>
                 </div>
                 <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
                     <div id="cd-mins" class="text-4xl font-extrabold text-primary">00</div>
-                    <span class="text-[9px] uppercase font-bold opacity-40 text-secondary">Phút</span>
+                    <span class="text-[10px] uppercase font-bold opacity-40 text-secondary">Phút</span>
                 </div>
             </div>
         </section>
 
-        <!-- New Progress Bar (Integrated into Layout) -->
-        <div class="max-w-xs mx-auto mb-10 text-center">
+        <!-- AUTOMATIC PROGRESS BAR -->
+        <div class="max-w-sm mx-auto mb-12 text-center">
             <div class="flex justify-between items-center mb-2 px-1">
-                <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Tiến độ thi</span>
-                <span id="progress-text" class="text-xs font-black text-blue-500">0%</span>
+                <span class="text-[10px] font-black uppercase tracking-widest opacity-50 text-secondary">Tiến độ hoàn thành kỳ thi</span>
+                <span id="progress-text" class="text-[12px] font-black text-blue-500">0%</span>
             </div>
             <div class="progress-bar-bg">
-                <div id="progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+                <div id="progress-bar" class="progress-bar-fill"></div>
             </div>
         </div>
 
-        <!-- Original Tab Selector -->
+        <!-- Tab Selector -->
         <div class="flex justify-center mb-10">
-            <div class="tab-group apple-glass p-1 w-full max-w-xs">
-                <button onclick="setGrade(7)" id="tab-7" class="tab-item tab-active">Khối 7</button>
-                <button onclick="setGrade(8)" id="tab-8" class="tab-item">Khối 8</button>
+            <div class="tab-group apple-glass p-1 w-full max-w-sm">
+                <button onclick="setGrade(7)" id="tab-7" class="tab-item tab-active">Khối 7 (Chiều)</button>
+                <button onclick="setGrade(8)" id="tab-8" class="tab-item">Khối 8 (Chiều)</button>
             </div>
         </div>
 
-        <!-- Original Quote Layout -->
+        <!-- Quote -->
         <div class="text-center mb-12 px-6 py-4 apple-glass mx-auto max-w-lg">
-            <p id="quote-text" class="text-sm italic font-medium opacity-70 text-secondary">"Thành công là tổng hợp của những nỗ lực nhỏ bé."</p>
+            <p id="quote-text" class="text-sm italic font-medium opacity-70 text-secondary">"Bình tĩnh, tự tin, chiến thắng!"</p>
         </div>
 
-        <!-- NEW PROFESSIONAL BOARD SHEETS -->
-        <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-32">
+        <!-- Board Sheets -->
+        <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-40">
             <!-- Dynamic Content -->
         </div>
 
-        <!-- Original Footer Layout -->
+        <!-- Footer -->
         <footer class="text-center pb-40">
-            <!-- New Footer Note from Pro Version -->
-            <div class="apple-glass p-4 mb-12 text-left bg-black/5 dark:bg-white/5 border-none shadow-sm flex gap-3 items-start">
-                <i class="ph-fill ph-info text-blue-500 text-lg mt-0.5"></i>
-                <p class="text-[11px] leading-relaxed opacity-60 text-secondary">
-                    Các môn <b>Âm nhạc, Mỹ thuật, GDTC, Tin học</b> kiểm tra từ 09/03 đến 20/03 theo tiết của lớp.
-                    <br>📍 <b>Toán, Văn, Anh:</b> Kiểm tra chia phòng. Các môn khác tại lớp.
-                </p>
+            <div class="apple-glass p-5 mb-12 text-left bg-black/5 dark:bg-white/5 border-none shadow-sm flex gap-4 items-start">
+                <i class="ph-fill ph-info text-blue-500 text-xl mt-0.5"></i>
+                <div class="text-[12px] leading-relaxed opacity-80 text-secondary font-medium">
+                    Môn <b>Âm nhạc, Mỹ thuật, GDTC, Tin học</b> kiểm tra tại lớp từ 09/03 - 20/03.
+                    <br><span class="text-blue-500 font-bold">📍 Chia phòng:</span> Toán, Văn, Anh.
+                    <br><span class="text-green-600 font-bold">🏠 Tại lớp:</span> Các môn còn lại.
+                </div>
             </div>
 
-            <div class="h-[1px] w-20 bg-gray-400 opacity-20 mx-auto mb-10"></div>
-            <p class="text-[10px] font-black uppercase tracking-[0.5em] opacity-30 mb-4 text-secondary">Người thực hiện</p>
-            <h2 class="text-3xl font-black tracking-tighter mb-4 text-primary">7A4 • <span class="text-blue-500">CONI</span></h2>
-            <p class="text-xs font-semibold opacity-40 text-secondary">© 2026 - THCS CONI. Chúc bạn thi tốt!</p>
+            <div class="h-[1px] w-16 bg-gray-400 opacity-20 mx-auto mb-10"></div>
+            <p class="text-[10px] font-black uppercase tracking-[0.4em] opacity-30 mb-4 text-secondary">Người thực hiện</p>
+            <h2 class="text-3xl font-black tracking-tighter mb-4 text-primary opacity-90">7A4 • <span class="text-blue-500">CONI</span></h2>
+            <p class="text-xs font-semibold opacity-40 text-secondary">© 2026 - Chúc tập thể 7A4 thi tốt!</p>
         </footer>
 
     </main>
 
-    <!-- Original Music Player -->
+    <!-- Music Player -->
     <div class="music-widget apple-glass flex items-center justify-between shadow-2xl">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white shadow-lg">
-                <i class="ph-fill ph-music-notes"></i>
+        <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-blue-500 flex items-center justify-center text-white shadow-lg">
+                <i class="ph-fill ph-music-notes text-lg"></i>
             </div>
             <div>
-                <h4 class="text-xs font-bold leading-none mb-1 text-primary">YouTube Music</h4>
-                <p class="text-[10px] opacity-60 text-secondary">"Giai điệu học tập"</p>
+                <h4 class="text-[13px] font-bold leading-none mb-1 text-primary">Nhạc tập trung</h4>
+                <p class="text-[11px] opacity-60 text-secondary italic">"Study Lofi Beats"</p>
             </div>
         </div>
-        <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-white/20 dark:bg-black/20 rounded-full">
+        <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/10 rounded-full hover:scale-110 transition-transform">
             <i class="ph-fill ph-play text-xl text-blue-500" id="play-icon"></i>
         </button>
     </div>
@@ -258,7 +240,7 @@
     <div id="yt-player"></div>
 
     <script>
-        // --- YOUTUBE API ---
+        // YouTube API
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -285,7 +267,6 @@
             isPlaying = !isPlaying;
         }
 
-        // --- DATA & LOGIC ---
         const schedules = {
             7: [
                 { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "14:25 - 15:10", label: "Tiết 2 (45')", split: false },
@@ -312,30 +293,29 @@
         const quotes = [
             "Bình tĩnh, tự tin, chiến thắng!",
             "7A4 - Một người vì mọi người.",
-            "Thành công nằm trong tầm tay bạn.",
-            "Nỗ lực hôm nay, gặt hái ngày mai."
+            "Nỗ lực hôm nay, gặt hái ngày mai.",
+            "Thành công nằm trong tầm tay bạn."
         ];
 
         let currentGrade = 7;
-        let checkedExams = JSON.parse(localStorage.getItem('checkedExams')) || {};
 
         function toggleTheme() { document.body.classList.toggle('dark-mode'); }
 
-        function toggleCheck(id) {
-            if (checkedExams[id]) delete checkedExams[id];
-            else checkedExams[id] = true;
-            localStorage.setItem('checkedExams', JSON.stringify(checkedExams));
-            updateProgress();
-            renderSchedule();
-        }
-
         function updateProgress() {
             const data = schedules[currentGrade];
-            let count = 0;
-            data.forEach((item, idx) => {
-                if (checkedExams[`${currentGrade}-${idx}`]) count++;
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            
+            let finishedCount = 0;
+            data.forEach(item => {
+                // Môn được coi là xong nếu ngày đã qua, hoặc là hôm nay nhưng đã qua giờ thi (giả định thi xong lúc 17:00)
+                const examEndTime = new Date(item.date + 'T17:00:00');
+                if (now > examEndTime) {
+                    finishedCount++;
+                }
             });
-            const percent = Math.round((count / data.length) * 100);
+            
+            const percent = Math.round((finishedCount / data.length) * 100);
             document.getElementById('progress-bar').style.width = percent + '%';
             document.getElementById('progress-text').innerText = percent + '%';
         }
@@ -353,40 +333,37 @@
             const grid = document.getElementById('schedule-grid');
             const data = schedules[currentGrade];
             const today = new Date().toISOString().split('T')[0];
+            const now = new Date();
             
             grid.innerHTML = data.map((item, index) => {
-                const id = `${currentGrade}-${index}`;
-                const isChecked = checkedExams[id] ? 'checked' : '';
-                
                 let statusClass = '';
-                if (item.date < today) statusClass = 'status-past';
-                if (item.date === today) statusClass = 'status-today';
+                const examEndTime = new Date(item.date + 'T17:00:00');
+                
+                if (now > examEndTime) statusClass = 'status-past';
+                else if (item.date === today) statusClass = 'status-today';
 
                 const d = item.date.split('-');
                 
                 return `
                 <div class="apple-glass p-5 flex items-center justify-between board-sheet ${statusClass}">
                     <div class="flex items-center gap-5">
-                        <!-- Checkbox -->
-                        <div class="flex items-center">
-                            <input type="checkbox" class="task-check" ${isChecked} onclick="toggleCheck('${id}')">
+                        <!-- Date Section (Divider Style) -->
+                        <div class="flex flex-col items-center justify-center w-16 border-r border-[var(--border-sep)] pr-4 shrink-0">
+                            <span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.day}</span>
+                            <span class="text-2xl font-black text-primary">${d[2]}</span>
                         </div>
 
-                        <!-- Date -->
-                        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex flex-col items-center justify-center border border-blue-500/10 shrink-0">
-                            <span class="text-[9px] font-black uppercase opacity-50 text-blue-500">${item.day}</span>
-                            <span class="text-xl font-black text-blue-500">${d[2]}</span>
-                        </div>
-
-                        <!-- Info -->
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <h4 class="font-bold text-lg leading-tight text-primary">${item.sub}</h4>
-                                ${item.split ? '<span class="text-[9px] font-bold bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded">📍 CHIA PHÒNG</span>' : ''}
+                        <!-- Info Section -->
+                        <div class="flex-1">
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4>
+                                ${item.split ? 
+                                    '<span class="text-[9px] font-bold bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded border border-red-500/10">📍 CHIA PHÒNG</span>' : 
+                                    '<span class="text-[9px] font-bold bg-green-500/10 text-green-600 px-1.5 py-0.5 rounded border border-green-500/10">🏠 TẠI LỚP</span>'}
                             </div>
                             <div class="flex flex-col">
-                                <span class="text-2xl time-text font-black tracking-tighter">${item.time}</span>
-                                <span class="text-[10px] font-bold opacity-40 uppercase tracking-widest text-secondary mt-0.5">${item.label}</span>
+                                <span class="text-2xl time-text font-black tracking-tight">${item.time}</span>
+                                <span class="text-[11px] font-bold opacity-40 uppercase tracking-widest text-secondary mt-0.5">${item.label}</span>
                             </div>
                         </div>
                     </div>
@@ -420,8 +397,10 @@
             document.getElementById('quote-text').innerText = `"${q}"`;
         }, 8000);
 
+        // Khởi tạo
         setGrade(7);
         setInterval(updateCountdown, 1000);
+        setInterval(updateProgress, 60000); // Cập nhật tiến độ mỗi phút
     </script>
 </body>
 </html>
