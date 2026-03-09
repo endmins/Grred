@@ -10,22 +10,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --text-primary: #1d1d1f;
-            --text-secondary: #424245;
+            /* DARK MODE (DEFAULT) */
+            --glass-bg: rgba(20, 20, 22, 0.82);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
             --accent-yellow: #ffcc00;
-            --blue-box: #0071e3;
+            --blue-box: #0a84ff;
+            --border-sep: rgba(255, 255, 255, 0.1);
             --radius-main: 28px;
-            --radius-sm: 18px;
+            --radius-sm: 16px;
         }
 
-        .dark-mode {
-            --glass-bg: rgba(28, 28, 30, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #f5f5f7;
-            --text-secondary: #a1a1a6;
-            --blue-box: #0a84ff;
+        body.light-mode {
+            /* LIGHT MODE FIX */
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --text-primary: #000000;
+            --text-secondary: #48484a;
+            --blue-box: #0071e3;
+            --border-sep: rgba(0, 0, 0, 0.1);
         }
 
         body {
@@ -36,7 +40,7 @@
             background-position: center;
             background-attachment: fixed;
             color: var(--text-primary);
-            transition: background-color 0.5s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -47,10 +51,10 @@
             -webkit-backdrop-filter: blur(40px) saturate(180%);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius-main);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* Yellow Bar */
+        /* Yellow Progress Bar */
         .bar-bg {
             background: rgba(120, 120, 128, 0.15);
             height: 8px; border-radius: 10px; overflow: hidden;
@@ -58,63 +62,51 @@
         .bar-fill {
             height: 100%; background: var(--accent-yellow); width: 0%;
             transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 12px rgba(255, 204, 0, 0.4);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
         }
 
-        /* Blue Box Date */
+        /* Date Icon Blue Box with Divider */
+        .date-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-right: 15px;
+            border-right: 1px solid var(--border-sep);
+            shrink-0;
+        }
         .date-blue {
             background: var(--blue-box);
-            width: 60px; height: 60px;
+            width: 56px; height: 56px;
             border-radius: var(--radius-sm);
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            flex-shrink: 0;
             box-shadow: 0 5px 15px rgba(0, 113, 227, 0.3);
         }
 
-        .status-past { opacity: 0.45; filter: grayscale(0.5); }
-        .status-today { border: 2px solid var(--blue-box) !important; transform: scale(1.01); }
+        .status-past { opacity: 0.45; filter: grayscale(0.6); }
+        .status-today { border: 2px solid var(--blue-box) !important; background: rgba(0, 113, 227, 0.05); }
 
-        /* Floating Music */
         .music-pop {
-            position: fixed;
-            bottom: 30px; left: 50%;
+            position: fixed; bottom: 30px; left: 50%;
             transform: translateX(-50%);
             width: 92%; max-width: 380px;
-            z-index: 1000;
-            padding: 12px 20px;
+            z-index: 1000; padding: 12px 20px;
         }
 
-        .tab-group {
-            background: rgba(120, 120, 128, 0.15);
-            padding: 4px; border-radius: 16px; display: flex;
-        }
-        .tab-btn {
-            flex: 1; padding: 10px 0; border-radius: 12px;
-            font-size: 14px; font-weight: 700; transition: 0.3s;
-            color: var(--text-secondary);
-        }
-        .tab-btn.active {
-            background: white; color: black;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .dark-mode .tab-btn.active { background: #636366; color: white; }
+        .tab-group { background: rgba(120, 120, 128, 0.12); padding: 4px; border-radius: 16px; display: flex; }
+        .tab-btn { flex: 1; padding: 10px 0; border-radius: 12px; font-size: 14px; font-weight: 700; transition: 0.3s; color: var(--text-secondary); }
+        .tab-btn.active { background: white; color: black; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        body.light-mode .tab-btn.active { background: var(--blue-box); color: white; }
+        .dark-mode-manual .tab-btn.active { background: #636366; color: white; }
 
-        /* Real Liquid PC */
-        .liquid-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; filter: url(#goo); opacity: 0.4; pointer-events: none;
-        }
-        .blob {
-            position: absolute; width: 450px; height: 450px;
-            background: linear-gradient(135deg, var(--blue-box), #ff00ea);
-            border-radius: 50%;
-        }
+        /* Liquid PC */
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: url(#goo); opacity: 0.4; pointer-events: none; }
+        .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #a855f7); border-radius: 50%; }
 
         @media (max-width: 1024px) { .liquid-bg { display: none; } }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body>
 
     <div class="liquid-bg">
         <div class="blob" id="b1" style="top: 10%; left: 10%;"></div>
@@ -126,15 +118,15 @@
         <defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" /><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" /></filter></defs>
     </svg>
 
-    <nav class="max-w-4xl mx-auto flex justify-end mb-12">
+    <nav class="max-w-4xl mx-auto flex justify-end p-6 md:p-10">
         <div onclick="toggleTheme()" class="w-12 h-12 apple-glass flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
-            <i class="ph-bold ph-sun-dim text-xl" id="theme-icon"></i>
+            <i class="ph-bold ph-moon-stars text-xl" id="theme-icon"></i>
         </div>
     </nav>
 
-    <main class="max-w-3xl mx-auto">
+    <main class="max-w-3xl mx-auto px-4">
         
-        <section class="apple-glass p-8 mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <section class="apple-glass p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="text-center md:text-left">
                 <span class="text-[11px] font-bold uppercase tracking-widest text-secondary block mb-1 opacity-60">Môn thi tiếp theo</span>
                 <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
@@ -160,45 +152,40 @@
 
         <div class="max-w-sm mx-auto mb-12">
             <div class="flex justify-between items-center mb-2 px-1">
-                <span class="text-[10px] font-black uppercase tracking-widest opacity-40">Tiến độ kỳ thi</span>
-                <span id="progress-text" class="text-[12px] font-black" style="color: #ffcc00;">0%</span>
+                <span class="text-[10px] font-black uppercase tracking-widest opacity-40 text-secondary">Tiến độ kỳ thi</span>
+                <span id="progress-text" class="text-[12px] font-black" style="color: var(--accent-yellow);">0%</span>
             </div>
             <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
         </div>
 
         <div class="flex justify-center mb-10">
-            <div class="tab-group w-full max-w-xs">
-                <button onclick="setGrade(7)" id="tab-7" class="tab-btn active">Khối 7</button>
-                <button onclick="setGrade(8)" id="tab-8" class="tab-btn">Khối 8</button>
+            <div class="tab-group w-full max-w-sm">
+                <button onclick="setGrade(7)" id="tab-7" class="tab-btn active">Khối 7 (Chiều)</button>
+                <button onclick="setGrade(8)" id="tab-8" class="tab-btn">Khối 8 (Chiều)</button>
             </div>
         </div>
 
         <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-40"></div>
 
-        <!-- Footer with Lag Optimization & Collab -->
-        <footer class="text-center pb-48 opacity-60">
+        <footer class="text-center pb-48 opacity-80">
             <div class="h-[1px] w-12 bg-gray-400 opacity-20 mx-auto mb-8"></div>
-            
             <div class="flex flex-col items-center gap-4">
-                <h2 class="text-2xl font-black tracking-tighter">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
-                
-                <a href="low-end" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
+                <h2 class="text-2xl font-black tracking-tighter text-primary">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
+                <a href="low-end" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-600 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
                     <i class="ph-bold ph-lightning"></i> LAG? Bấm để tối ưu
                 </a>
             </div>
-            
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40">© 2026 Collaboration Edition</p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary">© 2026 Collaboration Edition</p>
         </footer>
     </main>
 
-    <!-- Floating Music Popup -->
     <div class="music-pop apple-glass flex items-center justify-between shadow-2xl">
         <div class="flex items-center gap-4">
             <div class="w-11 h-11 rounded-xl bg-[var(--blue-box)] flex items-center justify-center text-white shadow-lg animate-pulse">
                 <i class="ph-fill ph-music-notes text-lg"></i>
             </div>
             <div>
-                <h4 class="text-[13px] font-bold leading-none mb-1">YouTube Chill</h4>
+                <h4 class="text-[13px] font-bold leading-none mb-1 text-primary">YouTube Chill</h4>
                 <p class="text-[10px] opacity-50 italic text-secondary">Study Mode Active</p>
             </div>
         </div>
@@ -210,12 +197,7 @@
     <div id="yt-player"></div>
 
     <script>
-        // LIQUID (PC)
-        if (window.innerWidth > 1024) {
-            gsap.to(".blob", { x: "random(-150, 150)", y: "random(-150, 150)", duration: "random(12, 22)", repeat: -1, yoyo: true, ease: "sine.inOut", stagger: 2 });
-        }
-
-        // YOUTUBE
+        if (window.innerWidth > 1024) { gsap.to(".blob", { x: "random(-150, 150)", y: "random(-150, 150)", duration: "random(12, 22)", repeat: -1, yoyo: true, ease: "sine.inOut", stagger: 2 }); }
         var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -275,17 +257,19 @@
                 return `
                 <div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}">
                     <div class="flex items-center gap-5">
-                        <div class="date-blue">
-                            <span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span>
-                            <span class="text-2xl font-black text-white">${item.date.split('-')[2]}</span>
+                        <div class="date-container">
+                            <div class="date-blue">
+                                <span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span>
+                                <span class="text-2xl font-black text-white">${item.date.split('-')[2]}</span>
+                            </div>
                         </div>
                         <div>
                             <h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4>
                             <div class="flex items-center gap-2">
                                 <span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>
-                                ${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-500">🏠 TẠI LỚP</span>'}
+                                ${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}
                             </div>
-                            <div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div>
+                            <div class="text-2xl font-black tracking-tighter mt-1" style="color: var(--accent-yellow);">${item.time}</div>
                         </div>
                     </div>
                     ${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}
