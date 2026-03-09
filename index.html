@@ -3,243 +3,431 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Thi Giữa HKII</title>
+    <title>7A4 - CONI | Premium Exam Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Sử dụng Phosphor Icons (Gần giống Fluent UI nhất trên CDN) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-        /* Windows 11 Font Stack */
+        :root {
+            --bg: #0a0c10;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+        }
+
+        .light-mode {
+            --bg: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --accent: #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.1);
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+        }
+
         body {
-            font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', sans-serif;
-            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'); /* Windows 11 Abstract Wallpaper Style */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
             min-height: 100vh;
-            color: #1a1a1a;
         }
 
-        /* Mica Effect - Glassmorphism */
-        .mica-card {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.1);
+        h1, h2, .font-outfit { font-family: 'Outfit', sans-serif; }
+
+        /* Complex Liquid Background */
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: url(#gooey);
         }
 
-        .mica-container {
-            background: rgba(243, 243, 243, 0.5);
-            backdrop-filter: blur(50px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        /* Smooth Transitions */
-        .card-anim {
-            transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
-        }
-        .card-anim:hover {
-            transform: scale(1.015) translateY(-2px);
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Active Tab Style (Windows 11 Segmented Control) */
-        .tab-active {
-            background-color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            color: #000;
-        }
-        
-        .tab-inactive {
-            color: #666;
-        }
-        .tab-inactive:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        /* Highlight Today */
-        .today-highlight {
-            border: 2px solid #0078D4; /* Windows Blue */
-            position: relative;
-            background: rgba(255, 255, 255, 0.95);
-        }
-        .today-badge {
-            background-color: #0078D4;
-            color: white;
+        .liquid-blob {
             position: absolute;
-            top: -10px;
-            right: 15px;
-            font-size: 11px;
-            padding: 2px 10px;
-            border-radius: 99px;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0, 120, 212, 0.4);
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(45deg, var(--accent), #ec4899);
+            border-radius: 50%;
+            opacity: 0.4;
+            filter: blur(60px);
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+        /* Grainy Overlay */
+        .grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Advanced Glassmorphism */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(30px) saturate(160%);
+            -webkit-backdrop-filter: blur(30px) saturate(160%);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .shimmer-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .shimmer-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: rotate(45deg);
+            transition: 0.8s;
+            pointer-events: none;
+        }
+
+        .shimmer-card:hover::after {
+            left: 100%;
+            top: 100%;
+        }
+
+        .shimmer-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px -10px var(--accent-glow);
+        }
+
+        /* Rotating Music Disk */
+        .music-disk {
+            animation: rotate 8s linear infinite;
+            animation-play-state: paused;
+        }
+        .music-disk.playing { animation-play-state: running; }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Custom Tabs */
+        .tab-btn {
+            position: relative;
+            z-index: 1;
+            transition: color 0.4s;
+        }
+        .tab-indicator {
+            position: absolute;
+            bottom: 0; left: 0; height: 100%; width: 50%;
+            background: var(--accent);
+            border-radius: 12px;
+            z-index: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Glow Effects */
+        .accent-glow { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+        
+        .status-dot {
+            width: 8px; height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #10b981;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* Responsive Text Fixes */
+        @media (max-width: 640px) {
+            .glass-panel { border-radius: 20px; }
+            .countdown-box { gap: 1rem !important; }
+        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-start py-10 px-4">
+<body class="p-4 md:p-8">
 
-    <!-- Main Container -->
-    <main class="w-full max-w-3xl mica-container rounded-[20px] p-6 md:p-8 shadow-2xl overflow-hidden relative">
-        
-        <!-- Header -->
-        <header class="text-center mb-8 relative z-10">
-            <h1 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-[#1a1a1a]">Lịch Thi Giữa Kỳ II</h1>
-            <p class="text-gray-600 font-medium">Năm học 2025 - 2026</p>
-        </header>
+    <div class="grain"></div>
 
-        <!-- Countdown -->
-        <div class="mb-8 flex justify-center">
-            <div class="bg-white/60 backdrop-blur-md border border-white/60 rounded-xl px-6 py-3 flex items-center gap-4 shadow-sm">
-                <div class="flex flex-col items-end">
-                    <span class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Sắp thi môn</span>
-                    <span id="next-subject" class="font-bold text-[#0078D4] text-lg">---</span>
-                </div>
-                <div class="h-8 w-[1px] bg-gray-300"></div>
-                <div class="flex gap-3 text-center">
-                    <div>
-                        <div id="cd-days" class="font-bold text-xl leading-none">00</div>
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">Ngày</span>
-                    </div>
-                    <div>
-                        <div id="cd-hours" class="font-bold text-xl leading-none">00</div>
-                        <span class="text-[10px] text-gray-500 font-bold uppercase">Giờ</span>
-                    </div>
+    <!-- Gooey Background -->
+    <div class="canvas-container">
+        <div class="liquid-blob" id="blob1" style="top: 10%; left: 10%;"></div>
+        <div class="liquid-blob" id="blob2" style="bottom: 10%; right: 10%; background: linear-gradient(45deg, #a855f7, #6366f1);"></div>
+        <div class="liquid-blob" id="blob3" style="top: 40%; left: 40%; width: 400px; height: 400px; background: #ec4899;"></div>
+    </div>
+
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="hidden">
+        <defs>
+            <filter id="gooey">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- UI Overlay: Top Bar -->
+    <nav class="max-w-6xl mx-auto flex justify-between items-center mb-12 relative z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 glass-panel flex items-center justify-center">
+                <i class="ph-bold ph-lightning accent-glow text-xl"></i>
+            </div>
+            <div>
+                <h2 class="font-outfit font-black text-xl tracking-tighter">7A4 • <span class="accent-glow">CONI</span></h2>
+                <div class="flex items-center text-[10px] uppercase tracking-widest font-bold opacity-50">
+                    <span class="status-dot"></span> System Live
                 </div>
             </div>
         </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="glass-panel p-1.5 flex gap-2">
+                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition-colors">
+                    <i class="ph-bold ph-moon-stars text-xl" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-        <!-- Tab Switcher (Segmented Control) -->
-        <div class="flex justify-center mb-8">
-            <div class="bg-gray-200/50 p-1 rounded-lg inline-flex relative backdrop-blur-sm">
-                <button onclick="setGrade(7)" id="tab-7" class="px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-active">
-                    Khối 7
-                </button>
-                <button onclick="setGrade(8)" id="tab-8" class="px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-inactive">
-                    Khối 8
-                </button>
+    <!-- Main Experience -->
+    <main class="max-w-4xl mx-auto relative z-10">
+        
+        <!-- Hero Section -->
+        <section class="text-center mb-16" id="hero">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[11px] font-black tracking-widest uppercase mb-6">
+                Official Mid-Term Examination Schedule
+            </span>
+            <h1 class="text-5xl md:text-7xl font-outfit font-black mb-6 tracking-tight leading-[1.1]">
+                Master Your <br><span class="accent-glow">Future.</span>
+            </h1>
+            <p class="text-lg text-secondary max-w-xl mx-auto font-medium leading-relaxed">
+                Stay focused, stay calm. The road to success for <span class="text-white font-bold">Class 7A4</span> starts with a clear plan.
+            </p>
+        </section>
+
+        <!-- Dynamic Countdown Widget -->
+        <section class="glass-panel p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-8 border-white/5 relative overflow-hidden" id="countdown-widget">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-accent/10 blur-3xl rounded-full"></div>
+            
+            <div class="flex flex-col gap-1">
+                <span class="text-xs font-black uppercase tracking-widest text-secondary">Next Objective</span>
+                <h3 id="next-subject" class="text-3xl font-outfit font-bold accent-glow">Loading...</h3>
+                <p class="text-sm opacity-50">THCS CONI • Academic Year 25-26</p>
+            </div>
+
+            <div class="flex gap-6 countdown-box">
+                <div class="text-center">
+                    <div id="cd-days" class="text-5xl font-outfit font-black mb-1">00</div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Days</span>
+                </div>
+                <div class="h-12 w-[1px] bg-white/10 self-center"></div>
+                <div class="text-center">
+                    <div id="cd-hours" class="text-5xl font-outfit font-black mb-1">00</div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Hours</span>
+                </div>
+                <div class="h-12 w-[1px] bg-white/10 self-center"></div>
+                <div class="text-center">
+                    <div id="cd-mins" class="text-5xl font-outfit font-black mb-1">00</div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Mins</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+            <div class="glass-panel p-1.5 flex relative w-full md:w-auto overflow-hidden">
+                <div id="tab-indicator" class="tab-indicator"></div>
+                <button onclick="setGrade(7)" class="tab-btn px-10 py-3 rounded-xl text-sm font-bold w-1/2 md:w-auto text-white" id="tab-7">Grade 7</button>
+                <button onclick="setGrade(8)" class="tab-btn px-10 py-3 rounded-xl text-sm font-bold w-1/2 md:w-auto" id="tab-8">Grade 8</button>
+            </div>
+
+            <div class="flex items-center gap-4 glass-panel px-6 py-3 w-full md:w-auto">
+                <i class="ph-bold ph-quotes accent-glow"></i>
+                <p id="quote-text" class="text-sm italic font-medium opacity-80 truncate max-w-[300px]">"Success is the sum of small efforts."</p>
             </div>
         </div>
 
         <!-- Schedule Grid -->
-        <div id="schedule-grid" class="grid grid-cols-1 gap-4">
-            <!-- Cards injected by JS -->
+        <div id="schedule-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+            <!-- Dynamic Content -->
         </div>
 
-        <!-- Footer / Note -->
-        <div class="mt-8 pt-6 border-t border-gray-200/50 flex gap-3 text-sm text-gray-600">
-            <i class="ph-fill ph-info text-xl text-[#0078D4]"></i>
-            <p class="leading-relaxed opacity-80">
-                <span class="font-semibold">Lưu ý:</span> Học sinh thực hiện đúng quy chế thi. Có mặt trước giờ làm bài 15 phút.
-                Các môn không có trong lịch thi sẽ học bình thường theo Thời khóa biểu.
-            </p>
+        <!-- Music Experience -->
+        <div class="fixed bottom-8 right-8 z-50">
+            <div class="glass-panel p-4 flex items-center gap-5 border-white/10 shadow-2xl">
+                <div class="relative w-14 h-14">
+                    <div class="absolute inset-0 bg-accent/30 blur-xl rounded-full animate-pulse"></div>
+                    <div class="music-disk w-full h-full rounded-full bg-cover bg-center border-4 border-white/10 relative z-10" id="disk-art" style="background-image: url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=2070&auto=format&fit=crop');">
+                        <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
+                            <div class="w-3 h-3 bg-black rounded-full border-2 border-white/20"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase font-black tracking-widest opacity-40">Ambient Study</span>
+                        <span class="text-xs font-bold truncate w-32">Lofi Night Beats</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleMusic()" id="play-btn" class="text-2xl hover:scale-110 transition-transform accent-glow">
+                            <i class="ph-fill ph-play-circle" id="play-icon"></i>
+                        </button>
+                        <div class="flex gap-0.5 items-end h-3" id="visualizer">
+                            <div class="w-1 h-full bg-accent rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                            <div class="w-1 h-2/3 bg-accent rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            <div class="w-1 h-1/2 bg-accent rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+                        </div>
+                    </div>
+                </div>
+                <audio id="bg-music" loop>
+                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                </audio>
+            </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="text-center py-12 border-t border-white/5 opacity-50">
+            <p class="text-xs font-bold uppercase tracking-[0.3em]">Architected with ♡ by <span class="text-white">7A4 - CONI</span></p>
+        </footer>
 
     </main>
 
     <script>
-        // DỮ LIỆU LỊCH THI (Cập nhật theo ảnh của bạn tại đây)
         const schedules = {
             7: [
-                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45'", shift: "Tiết 1", note: "Theo TKB" },
-                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90'", shift: "Tiết 2-3", note: "Tập trung P.Thi" },
-                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90'", shift: "Tiết 2-3", note: "Mang máy tính" },
-                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60'", shift: "Tiết 2", note: "Nghe + Viết" },
-                { date: "2026-03-16", day: "Thứ 2", sub: "Toán", time: "90'", shift: "Tiết 2-3", note: "Đại số + Hình" },
-                { date: "2026-03-17", day: "Thứ 3", sub: "Lịch sử & Địa lý", time: "60'", shift: "Tiết 3", note: "" },
+                { date: "2026-03-10", day: "Tuesday", sub: "Technology", time: "45m", icon: "ph-cpu" },
+                { date: "2026-03-11", day: "Wednesday", sub: "Literature", time: "90m", icon: "ph-books" },
+                { date: "2026-03-12", day: "Thursday", sub: "Science", time: "90m", icon: "ph-atom" },
+                { date: "2026-03-13", day: "Friday", sub: "English", time: "60m", icon: "ph-translate" },
+                { date: "2026-03-16", day: "Monday", sub: "Mathematics", time: "90m", icon: "ph-function" },
+                { date: "2026-03-17", day: "Tuesday", sub: "History & Geo", time: "60m", icon: "ph-globe" },
             ],
             8: [
-                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45'", shift: "Tiết 4", note: "Theo TKB" },
-                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90'", shift: "Tiết 2-3", note: "Tập trung P.Thi" },
-                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90'", shift: "Tiết 2-3", note: "Mang máy tính" },
-                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60'", shift: "Tiết 2", note: "Nghe + Viết" },
-                { date: "2026-03-16", day: "Thứ 2", sub: "Toán", time: "90'", shift: "Tiết 2-3", note: "Mang compa, thước" },
-                { date: "2026-03-17", day: "Thứ 3", sub: "GDCD", time: "45'", shift: "Tiết 1", note: "" },
+                { date: "2026-03-10", day: "Tuesday", sub: "Technology", time: "45m", icon: "ph-cpu" },
+                { date: "2026-03-11", day: "Wednesday", sub: "Literature", time: "90m", icon: "ph-books" },
+                { date: "2026-03-12", day: "Thursday", sub: "Science", time: "90m", icon: "ph-atom" },
+                { date: "2026-03-13", day: "Friday", sub: "English", time: "60m", icon: "ph-translate" },
+                { date: "2026-03-16", day: "Monday", sub: "Mathematics", time: "90m", icon: "ph-function" },
+                { date: "2026-03-17", day: "Tuesday", sub: "Civic Ed", time: "45m", icon: "ph-users-three" },
             ]
         };
 
+        const quotes = [
+            "Believe you can and you're halfway there.",
+            "Study hard, do good, and the rest will follow.",
+            "Focus on being productive instead of busy.",
+            "The expert in anything was once a beginner.",
+            "7A4 is the best class in CONI!"
+        ];
+
         let currentGrade = 7;
+        let isPlaying = false;
+
+        function initAnimations() {
+            gsap.from("#hero > *", { y: 30, opacity: 0, stagger: 0.2, duration: 1, ease: "power4.out" });
+            gsap.from("#countdown-widget", { scale: 0.9, opacity: 0, duration: 1, delay: 0.5, ease: "back.out(1.7)" });
+            
+            // Move blobs
+            gsap.to(".liquid-blob", {
+                x: "random(-100, 100)",
+                y: "random(-100, 100)",
+                duration: "random(10, 20)",
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                stagger: 2
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('theme-icon');
+            icon.className = document.body.classList.contains('light-mode') ? 'ph-bold ph-sun text-xl' : 'ph-bold ph-moon-stars text-xl';
+        }
 
         function setGrade(grade) {
             currentGrade = grade;
+            const indicator = document.getElementById('tab-indicator');
+            const t7 = document.getElementById('tab-7');
+            const t8 = document.getElementById('tab-8');
             
-            // Update Tab UI
-            document.getElementById('tab-7').className = grade === 7 ? 
-                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-active' : 
-                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-inactive';
-            
-            document.getElementById('tab-8').className = grade === 8 ? 
-                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-active' : 
-                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-inactive';
+            indicator.style.left = grade === 7 ? '0' : '50%';
+            t7.style.color = grade === 7 ? 'white' : 'var(--text-secondary)';
+            t8.style.color = grade === 8 ? 'white' : 'var(--text-secondary)';
 
             renderSchedule();
-            updateCountdown();
         }
 
         function renderSchedule() {
-            const container = document.getElementById('schedule-grid');
+            const grid = document.getElementById('schedule-grid');
             const data = schedules[currentGrade];
             const today = new Date().toISOString().split('T')[0];
             
-            let html = '';
-            
-            data.forEach(item => {
+            grid.innerHTML = '';
+            data.forEach((item, index) => {
                 const isToday = item.date === today;
-                
-                // Format Date: 2026-03-10 -> 10/03
-                const d = item.date.split('-');
-                const displayDate = `${d[2]}/${d[1]}`;
+                const dateObj = new Date(item.date);
+                const dayNum = dateObj.getDate();
+                const month = dateObj.toLocaleString('en-US', { month: 'short' });
 
-                html += `
-                <div class="mica-card rounded-xl p-4 flex items-center justify-between gap-4 card-anim ${isToday ? 'today-highlight' : ''}">
-                    ${isToday ? '<div class="today-badge">HÔM NAY</div>' : ''}
-                    
-                    <!-- Column 1: Date -->
-                    <div class="flex flex-col items-center justify-center min-w-[60px] border-r border-gray-200 pr-4">
-                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">${item.day}</span>
-                        <span class="text-2xl font-bold text-[#0078D4]">${displayDate}</span>
+                const card = document.createElement('div');
+                card.className = `glass-panel p-6 shimmer-card flex items-center gap-6 border-white/5 ${isToday ? 'border-indigo-500/50 bg-indigo-500/5' : ''}`;
+                card.innerHTML = `
+                    <div class="flex flex-col items-center justify-center bg-white/5 w-16 h-16 rounded-2xl border border-white/10">
+                        <span class="text-[9px] font-black uppercase tracking-widest opacity-40">${item.day.slice(0,3)}</span>
+                        <span class="text-2xl font-black accent-glow">${dayNum}</span>
+                        <span class="text-[9px] font-bold uppercase opacity-40">${month}</span>
                     </div>
-
-                    <!-- Column 2: Subject -->
                     <div class="flex-1">
-                        <h3 class="text-lg font-bold text-gray-800">${item.sub}</h3>
-                        ${item.note ? `<div class="text-xs text-gray-500 mt-1 flex items-center gap-1"><i class="ph-fill ph-note-pencil"></i> ${item.note}</div>` : ''}
-                    </div>
-
-                    <!-- Column 3: Time -->
-                    <div class="text-right pl-2">
-                        <div class="inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md mb-1">
-                            <i class="ph-bold ph-clock text-[#0078D4] text-xs"></i>
-                            <span class="text-xs font-semibold">${item.time}</span>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="${item.icon} text-lg text-indigo-400"></i>
+                            <h4 class="font-outfit font-bold text-lg">${item.sub}</h4>
                         </div>
-                        <div class="text-xs font-medium text-gray-600">${item.shift}</div>
+                        <div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider opacity-50">
+                            <span><i class="ph-bold ph-clock-countdown"></i> ${item.time}</span>
+                            <span><i class="ph-bold ph-check-circle"></i> Required</span>
+                        </div>
                     </div>
-                </div>
+                    ${isToday ? '<span class="absolute top-4 right-4 text-[8px] font-black bg-indigo-500 text-white px-2 py-0.5 rounded-full">ACTIVE</span>' : ''}
                 `;
+                grid.appendChild(card);
+                gsap.from(card, { opacity: 0, x: -20, delay: 0.1 * index });
             });
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('bg-music');
+            const icon = document.getElementById('play-icon');
+            const disk = document.getElementById('disk-art');
+            const visualizer = document.getElementById('visualizer');
             
-            container.innerHTML = html;
+            if (isPlaying) {
+                audio.pause();
+                icon.className = 'ph-fill ph-play-circle';
+                disk.classList.remove('playing');
+                visualizer.style.opacity = '0.3';
+            } else {
+                audio.play();
+                icon.className = 'ph-fill ph-pause-circle';
+                disk.classList.add('playing');
+                visualizer.style.opacity = '1';
+            }
+            isPlaying = !isPlaying;
         }
 
         function updateCountdown() {
             const data = schedules[currentGrade];
             const now = new Date();
-            
-            // Find next exam (exam start time assumed 07:00 for simplicity)
             const nextExam = data.find(item => new Date(item.date + 'T07:00:00') > now);
 
             if (!nextExam) {
-                document.getElementById('next-subject').innerText = "Hoàn thành";
-                document.getElementById('cd-days').innerText = "00";
-                document.getElementById('cd-hours').innerText = "00";
+                document.getElementById('next-subject').innerText = "Mission Accomplished";
                 return;
             }
 
@@ -247,16 +435,27 @@
             const target = new Date(nextExam.date + 'T07:00:00');
             const diff = target - now;
 
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-            document.getElementById('cd-days').innerText = days.toString().padStart(2, '0');
-            document.getElementById('cd-hours').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById('cd-hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
         }
 
-        // Init
-        setGrade(7);
-        setInterval(updateCountdown, 60000); // Update every minute
+        // Quotes Cycle
+        setInterval(() => {
+            const quoteText = document.getElementById('quote-text');
+            gsap.to(quoteText, { opacity: 0, duration: 0.5, onComplete: () => {
+                quoteText.innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
+                gsap.to(quoteText, { opacity: 1, duration: 0.5 });
+            }});
+        }, 10000);
+
+        // Initialization
+        window.addEventListener('load', () => {
+            initAnimations();
+            setGrade(7);
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
     </script>
 </body>
 </html>
