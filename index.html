@@ -3,215 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7A4 - CONI | High-End Exam Portal</title>
+    <title>7A4 x Surface Studios | Exam Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI+Variable:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --text-primary: #1d1d1f;
-            --text-secondary: #424245;
-            --accent: #ffcc00; /* Yellow Bar */
-            --blue-box: #0071e3;
+            --surface-mica: rgba(26, 26, 26, 0.7);
+            --surface-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --accent-yellow: #ffd700;
+            --win-blue: #0078d4;
+            --win-radius: 12px;
+            --win-radius-sm: 8px;
         }
 
-        .dark-mode {
-            --glass-bg: rgba(28, 28, 30, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #f5f5f7;
-            --text-secondary: #a1a1a6;
-            --accent: #ffcc00;
-            --blue-box: #0a84ff;
+        .light-mode {
+            --surface-mica: rgba(255, 255, 255, 0.8);
+            --surface-border: rgba(0, 0, 0, 0.08);
+            --text-primary: #1a1a1a;
+            --text-secondary: #505050;
+            --win-blue: #0067c0;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            font-family: 'Segoe UI Variable', sans-serif;
             background-color: #000;
             background-image: url('1.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: var(--text-primary);
-            transition: all 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* REAL LIQUID GLASS EFFECTS (PC ONLY) */
-        .liquid-container {
+        /* REAL LIQUID GLASS (PC) */
+        .liquid-layer {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            filter: url(#gooey);
-            opacity: 0.6;
+            filter: url(#gooey-filter);
+            opacity: 0.45;
             pointer-events: none;
         }
         .blob {
             position: absolute;
-            width: 400px; height: 400px;
-            background: linear-gradient(135deg, var(--blue-box), #ff00ea);
+            width: 450px; height: 450px;
+            background: linear-gradient(135deg, var(--win-blue), #8e2de2);
             border-radius: 50%;
         }
 
-        .apple-glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        /* SURFACE MICA MATERIAL */
+        .mica-panel {
+            background: var(--surface-mica);
+            backdrop-filter: blur(45px) saturate(160%);
+            -webkit-backdrop-filter: blur(45px) saturate(160%);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--win-radius);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
         }
 
-        /* Yellow Progress Bar */
-        .progress-bar-bg {
-            background: rgba(120, 120, 128, 0.15);
-            height: 10px;
-            border-radius: 20px;
+        /* YELLOW PROGRESS BAR */
+        .progress-track {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 10px;
             overflow: hidden;
         }
-        .progress-bar-fill {
+        .progress-thumb {
             height: 100%;
-            background: #ffcc00; /* Yellow */
+            background: var(--accent-yellow);
             width: 0%;
-            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+            transition: width 1.5s cubic-bezier(0.1, 0.9, 0.2, 1);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
         }
 
-        /* Date Icon Blue Box */
-        .date-blue-box {
-            background: var(--blue-box);
-            width: 60px; height: 60px;
-            border-radius: 18px;
+        /* BLUE BOX DATE */
+        .date-box {
+            background: var(--win-blue);
+            width: 58px; height: 58px;
+            border-radius: var(--win-radius-sm);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 5px 15px rgba(0, 113, 227, 0.3);
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
         }
 
-        .status-past { opacity: 0.4; filter: grayscale(0.8); }
-        .status-today { border: 2px solid var(--blue-box) !important; transform: scale(1.02); }
+        .status-past { opacity: 0.4; filter: contrast(0.8) grayscale(0.4); }
+        .status-today { border: 2px solid var(--win-blue) !important; background: rgba(0, 120, 212, 0.05); }
 
-        .lag-button {
+        /* FLOATING MUSIC WIDGET (Previous Version Style) */
+        .music-floating {
             position: fixed;
-            bottom: 100px; left: 20px;
-            z-index: 999;
-            background: #ff3b30;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 800;
-            box-shadow: 0 5px 20px rgba(255, 59, 48, 0.4);
-            animation: bounce 2s infinite;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            width: 92%; max-width: 380px;
+            z-index: 1000;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .seg-control {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 4px;
+            border-radius: 10px;
+            display: flex;
+            border: 1px solid var(--surface-border);
+        }
+        .seg-tab {
+            flex: 1; padding: 10px 0; border-radius: 7px;
+            font-size: 13px; font-weight: 700; transition: 0.3s;
+            color: var(--text-secondary);
+        }
+        .seg-tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        @media (max-width: 1024px) {
-            .liquid-container { display: none; }
+        .lag-toast {
+            position: fixed; top: 20px; left: 20px;
+            z-index: 9999; background: #e81123; color: white;
+            padding: 10px 16px; border-radius: 4px;
+            font-size: 11px; font-weight: 800; cursor: pointer;
         }
+
+        @media (max-width: 1024px) { .liquid-layer { display: none; } }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
-    <!-- PC Liquid Glass Effect -->
-    <div class="liquid-container">
-        <div class="blob" id="blob1" style="top: 10%; left: 10%;"></div>
-        <div class="blob" id="blob2" style="bottom: 10%; right: 10%; width: 500px; height: 500px;"></div>
-        <div class="blob" id="blob3" style="top: 40%; left: 40%; width: 300px; height: 300px;"></div>
+    <div class="liquid-layer">
+        <div class="blob" id="b1" style="top: 15%; left: 10%;"></div>
+        <div class="blob" id="b2" style="bottom: 10%; right: 15%; width: 550px; height: 550px; background: #60cdff;"></div>
+        <div class="blob" id="b3" style="top: 40%; left: 45%; width: 300px; height: 300px;"></div>
     </div>
 
     <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
         <defs>
-            <filter id="gooey">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -10" result="goo" />
+            <filter id="gooey-filter">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" />
             </filter>
         </defs>
     </svg>
 
-    <a href="low-end.html" id="lag-btn" class="lag-button hidden">LAG? HÃY BẤM VÀO TÔI</a>
+    <div onclick="window.location.href='low-end.html'" id="fps-toast" class="lag-toast hidden">LAG? Bấm để tối ưu hiệu năng</div>
 
-    <nav class="max-w-4xl mx-auto flex justify-end items-center mb-8">
-        <div onclick="toggleTheme()" class="w-12 h-12 apple-glass flex items-center justify-center cursor-pointer">
-            <i class="ph-bold ph-moon-stars text-xl"></i>
+    <!-- Header Branding -->
+    <header class="max-w-4xl mx-auto flex justify-between items-center mb-12">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 mica-panel flex items-center justify-center border-none shadow-none">
+                <i class="ph-bold ph-sketch-logo text-2xl text-[var(--win-blue)]"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-tight">7A4 x <span class="opacity-60">Surface Studios</span></h1>
+                <p class="text-[9px] uppercase font-black tracking-[0.3em] opacity-40">Collaboration Edition</p>
+            </div>
         </div>
-    </nav>
+        <div onclick="toggleTheme()" class="w-10 h-10 mica-panel flex items-center justify-center cursor-pointer hover:bg-white/5">
+            <i class="ph-bold ph-sun text-lg" id="theme-icon"></i>
+        </div>
+    </header>
 
     <main class="max-w-3xl mx-auto">
         
-        <section class="apple-glass p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- Countdown Panel -->
+        <section class="mica-panel p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-8 border-b-2 border-b-white/5">
             <div class="text-center md:text-left">
-                <span class="text-[11px] font-bold uppercase tracking-widest text-secondary block mb-1 opacity-60">Môn thi tiếp theo</span>
-                <h3 id="next-subject" class="text-3xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
+                <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary opacity-50 mb-1 block">Tiếp theo</span>
+                <h3 id="next-subject" class="text-3xl font-bold tracking-tight text-[var(--win-blue)]">Đang tải...</h3>
             </div>
             
             <div class="flex gap-8 items-center">
                 <div class="text-center">
-                    <div id="cd-days" class="text-4xl font-extrabold">00</div>
-                    <span class="text-[10px] uppercase font-bold opacity-40">Ngày</span>
+                    <div id="cd-days" class="text-4xl font-light">00</div>
+                    <span class="text-[9px] uppercase font-bold opacity-40">Ngày</span>
                 </div>
-                <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
+                <div class="w-[1px] h-10 bg-white/10"></div>
                 <div class="text-center">
-                    <div id="cd-hours" class="text-4xl font-extrabold">00</div>
-                    <span class="text-[10px] uppercase font-bold opacity-40">Giờ</span>
+                    <div id="cd-hours" class="text-4xl font-light">00</div>
+                    <span class="text-[9px] uppercase font-bold opacity-40">Giờ</span>
                 </div>
-                <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
+                <div class="w-[1px] h-10 bg-white/10"></div>
                 <div class="text-center">
-                    <div id="cd-mins" class="text-4xl font-extrabold">00</div>
-                    <span class="text-[10px] uppercase font-bold opacity-40">Phút</span>
+                    <div id="cd-mins" class="text-4xl font-light">00</div>
+                    <span class="text-[9px] uppercase font-bold opacity-40">Phút</span>
                 </div>
             </div>
         </section>
 
-        <!-- YELLOW PROGRESS BAR -->
+        <!-- Progress Section -->
         <div class="max-w-md mx-auto mb-12">
             <div class="flex justify-between items-center mb-2 px-1">
-                <span class="text-[10px] font-black uppercase tracking-widest opacity-50">Tiến độ kỳ thi</span>
-                <span id="progress-text" class="text-[12px] font-black" style="color: #ffcc00;">0%</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Kỳ thi đang diễn ra</span>
+                <span id="progress-text" class="text-[11px] font-bold text-[var(--accent-yellow)]">0%</span>
             </div>
-            <div class="progress-bar-bg">
-                <div id="progress-bar" class="progress-bar-fill"></div>
+            <div class="progress-track">
+                <div id="progress-bar" class="progress-thumb"></div>
             </div>
         </div>
 
+        <!-- Tab Selector -->
         <div class="flex justify-center mb-10">
-            <div class="flex bg-black/10 dark:bg-white/10 p-1 rounded-2xl w-full max-w-sm">
-                <button onclick="setGrade(7)" id="tab-7" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all">Khối 7</button>
-                <button onclick="setGrade(8)" id="tab-8" class="flex-1 py-3 rounded-xl text-sm font-bold transition-all">Khối 8</button>
+            <div class="seg-control w-full max-w-sm">
+                <button onclick="setGrade(7)" id="tab-7" class="seg-tab active">KHỐI 7</button>
+                <button onclick="setGrade(8)" id="tab-8" class="seg-tab">KHỐI 8</button>
             </div>
         </div>
 
-        <div id="schedule-grid" class="grid grid-cols-1 gap-5 mb-40"></div>
+        <!-- Schedule Grid -->
+        <div id="schedule-grid" class="grid grid-cols-1 gap-3 mb-48"></div>
 
-        <footer class="text-center pb-40">
-            <p class="text-[10px] font-black uppercase tracking-[0.5em] opacity-30 mb-4">Người thực hiện</p>
-            <h2 class="text-4xl font-black tracking-tighter mb-4">7A4 • <span style="color: var(--blue-box);">CONI</span></h2>
-            <p class="text-xs font-semibold opacity-40">© 2026 - THCS CONI. Chúc bạn thi tốt!</p>
+        <!-- Footer -->
+        <footer class="text-center pb-40 opacity-50">
+            <div class="flex flex-col items-center gap-2 mb-6">
+                <p class="text-[10px] font-bold uppercase tracking-[0.5em]">Powered By</p>
+                <h2 class="text-3xl font-black tracking-tighter">7A4 • <span class="text-[var(--win-blue)]">CONI</span></h2>
+            </div>
+            <p class="text-[10px] font-medium max-w-xs mx-auto leading-relaxed">
+                In collaboration with <b>Surface Studios</b>. <br>Designed for maximum academic performance.
+            </p>
         </footer>
     </main>
 
-    <!-- Music Player -->
-    <div class="music-widget apple-glass flex items-center justify-between">
+    <!-- FLOATING MUSIC WIDGET (VERSION BEFORE STYLE) -->
+    <div class="music-floating mica-panel shadow-2xl">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg">
-                <i class="ph-fill ph-music-notes text-xl"></i>
+            <div class="w-11 h-11 rounded-lg bg-[var(--win-blue)] flex items-center justify-center text-white shadow-lg animate-pulse">
+                <i class="ph-fill ph-music-notes text-lg"></i>
             </div>
             <div>
-                <h4 class="text-sm font-bold leading-none mb-1">YouTube Chill</h4>
-                <p class="text-[11px] opacity-60">Nhạc tập trung ôn tập</p>
+                <h4 class="text-[13px] font-bold leading-none mb-1">YouTube Chill</h4>
+                <p class="text-[10px] opacity-50 italic">Relaxing Mode</p>
             </div>
         </div>
-        <button onclick="toggleMusic()" class="w-12 h-12 flex items-center justify-center bg-black/5 dark:bg-white/10 rounded-full">
-            <i class="ph-fill ph-play text-2xl" id="play-icon" style="color: var(--blue-box);"></i>
+        <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-lg hover:bg-white/10 transition-all">
+            <i class="ph-fill ph-play text-xl" id="play-icon" style="color: var(--win-blue);"></i>
         </button>
     </div>
 
@@ -219,52 +255,37 @@
 
     <script>
         // FPS MONITOR
-        let frames = 0;
-        let lastTime = performance.now();
-        function monitorFPS() {
-            let now = performance.now();
-            frames++;
-            if (now > lastTime + 1000) {
-                let fps = Math.round((frames * 1000) / (now - lastTime));
-                if (fps < 30) document.getElementById('lag-btn').classList.remove('hidden');
-                frames = 0;
-                lastTime = now;
+        let f = 0; let lt = performance.now();
+        function monitor() {
+            let n = performance.now(); f++;
+            if (n > lt + 1000) {
+                let fps = Math.round((f * 1000) / (n - lt));
+                if (fps < 30) document.getElementById('fps-toast').classList.remove('hidden');
+                f = 0; lt = n;
             }
-            requestAnimationFrame(monitorFPS);
+            requestAnimationFrame(monitor);
         }
-        monitorFPS();
+        monitor();
 
-        // LIQUID ANIMATION
+        // LIQUID (PC)
         if (window.innerWidth > 1024) {
             gsap.to(".blob", {
-                x: "random(-200, 200)",
-                y: "random(-200, 200)",
-                duration: "random(10, 20)",
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut",
-                stagger: 2
+                x: "random(-180, 180)", y: "random(-180, 180)",
+                duration: "random(12, 22)", repeat: -1, yoyo: true, ease: "sine.inOut", stagger: 2
             });
         }
 
-        // YOUTUBE & DATA
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
+        // YOUTUBE
+        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
         var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-player', {
-                height: '0', width: '0', videoId: 'yJ6Lbsmb1lY'
-            });
-        }
-
+        function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'yJ6Lbsmb1lY' }); }
         let isPlaying = false;
         function toggleMusic() {
             const icon = document.getElementById('play-icon');
-            if (isPlaying) { player.pauseVideo(); icon.className = 'ph-fill ph-play text-2xl'; }
-            else { player.playVideo(); icon.className = 'ph-fill ph-pause text-2xl'; }
+            if (isPlaying) { player.pauseVideo(); icon.className = 'ph-fill ph-play text-xl'; }
+            else { player.playVideo(); icon.className = 'ph-fill ph-pause text-xl'; }
             isPlaying = !isPlaying;
         }
 
@@ -274,7 +295,7 @@
                 { date: "2026-03-11", day: "T4", sub: "Lịch sử", time: "14:25 - 15:10", label: "Tiết 2", split: false },
                 { date: "2026-03-11", day: "T4", sub: "Địa lí", time: "15:20 - 16:05", label: "Tiết 3", split: false },
                 { date: "2026-03-12", day: "T5", sub: "GDCD", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-13", day: "T6", sub: "KHTN", time: "14:25 - 15:55", label: "Tiết 2, 3", split: false },
+                { date: "2026-03-13", day: "T6", sub: "KHTN", time: "14:25 - 15:55", label: "90 phút", split: false },
                 { date: "2026-03-16", day: "T2", sub: "Tiếng Anh 7", time: "13:30 - 14:30", label: "60 phút", split: true },
                 { date: "2026-03-18", day: "T4", sub: "Ngữ văn 7", time: "13:30 - 15:00", label: "90 phút", split: true },
                 { date: "2026-03-19", day: "T5", sub: "Toán 7", time: "13:30 - 15:00", label: "90 phút", split: true },
@@ -284,7 +305,7 @@
                 { date: "2026-03-11", day: "T4", sub: "Lịch sử", time: "14:25 - 15:10", label: "Tiết 2", split: false },
                 { date: "2026-03-11", day: "T4", sub: "Địa lí", time: "15:20 - 16:05", label: "Tiết 3", split: false },
                 { date: "2026-03-12", day: "T5", sub: "GDCD", time: "14:25 - 15:10", label: "Tiết 2", split: false },
-                { date: "2026-03-13", day: "T6", sub: "KHTN", time: "14:25 - 15:55", label: "Tiết 2, 3", split: false },
+                { date: "2026-03-13", day: "T6", sub: "KHTN", time: "14:25 - 15:55", label: "90 phút", split: false },
                 { date: "2026-03-17", day: "T3", sub: "Tiếng Anh 8", time: "13:30 - 14:30", label: "60 phút", split: true },
                 { date: "2026-03-18", day: "T4", sub: "Ngữ văn 8", time: "15:30 - 17:00", label: "90 phút", split: true },
                 { date: "2026-03-19", day: "T5", sub: "Toán 8", time: "15:30 - 17:00", label: "90 phút", split: true },
@@ -292,56 +313,54 @@
         };
 
         let currentGrade = 7;
-        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('theme-icon');
+            icon.className = document.body.classList.contains('light-mode') ? 'ph-bold ph-moon text-lg' : 'ph-bold ph-sun text-lg';
+        }
 
         function setGrade(grade) {
             currentGrade = grade;
-            document.getElementById('tab-7').className = grade === 7 ? 'flex-1 py-3 rounded-xl text-sm font-bold bg-white dark:bg-[#636366] shadow-lg' : 'flex-1 py-3 rounded-xl text-sm font-bold opacity-50';
-            document.getElementById('tab-8').className = grade === 8 ? 'flex-1 py-3 rounded-xl text-sm font-bold bg-white dark:bg-[#636366] shadow-lg' : 'flex-1 py-3 rounded-xl text-sm font-bold opacity-50';
-            renderSchedule();
-            updateCountdown();
-            updateProgress();
+            document.getElementById('tab-7').className = grade === 7 ? 'seg-tab active' : 'seg-tab';
+            document.getElementById('tab-8').className = grade === 8 ? 'seg-tab active' : 'seg-tab';
+            render(); updateCountdown(); updateProgress();
         }
 
-        function renderSchedule() {
+        function render() {
             const grid = document.getElementById('schedule-grid');
-            const data = schedules[currentGrade];
-            const today = new Date().toISOString().split('T')[0];
             const now = new Date();
+            const today = now.toISOString().split('T')[0];
             
-            grid.innerHTML = data.map(item => {
-                let statusClass = '';
+            grid.innerHTML = schedules[currentGrade].map(item => {
+                let status = '';
                 const endTime = new Date(item.date + 'T17:00:00');
-                if (now > endTime) statusClass = 'status-past';
-                else if (item.date === today) statusClass = 'status-today';
+                if (now > endTime) status = 'status-past';
+                else if (item.date === today) status = 'status-today';
 
-                const d = item.date.split('-')[2];
-                
                 return `
-                <div class="apple-glass p-5 flex items-center justify-between transition-all ${statusClass}">
-                    <div class="flex items-center gap-5">
-                        <div class="date-blue-box">
-                            <span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span>
-                            <span class="text-2xl font-black text-white">${d}</span>
+                <div class="mica-panel p-4 flex items-center justify-between transition-all duration-500 border border-white/5 ${status}">
+                    <div class="flex items-center gap-4">
+                        <div class="date-box">
+                            <span class="text-[8px] font-bold text-white/50 uppercase">${item.day}</span>
+                            <span class="text-xl font-bold text-white">${item.date.split('-')[2]}</span>
                         </div>
                         <div>
-                            <h4 class="font-extrabold text-lg leading-tight mb-1">${item.sub}</h4>
+                            <h4 class="font-bold text-[15px] leading-tight mb-1">${item.sub}</h4>
                             <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold uppercase py-0.5 px-2 rounded-md bg-black/5 dark:bg-white/5 opacity-60">${item.label}</span>
-                                ${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-500">🏠 TẠI LỚP</span>'}
+                                <span class="text-[9px] font-bold uppercase py-0.5 px-1.5 rounded bg-white/5 opacity-50">${item.label}</span>
+                                ${item.split ? '<span class="text-[9px] font-bold text-blue-400">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-400">🏠 TẠI LỚP</span>'}
                             </div>
-                            <div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div>
+                            <div class="text-xl font-black tracking-tighter mt-1" style="color: var(--accent-yellow);">${item.time}</div>
                         </div>
                     </div>
-                    ${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}
+                    ${item.date === today ? '<span class="bg-[var(--win-blue)] text-white text-[8px] font-bold px-2 py-1 rounded">HÔM NAY</span>' : ''}
                 </div>`;
             }).join('');
         }
 
         function updateProgress() {
             const data = schedules[currentGrade];
-            const now = new Date();
-            let count = data.filter(i => now > new Date(i.date + 'T17:00:00')).length;
+            let count = data.filter(i => new Date() > new Date(i.date + 'T17:00:00')).length;
             const p = Math.round((count / data.length) * 100);
             document.getElementById('progress-bar').style.width = p + '%';
             document.getElementById('progress-text').innerText = p + '%';
@@ -350,7 +369,7 @@
         function updateCountdown() {
             const data = schedules[currentGrade];
             const next = data.find(item => new Date(item.date + 'T13:30:00') > new Date());
-            if (!next) { document.getElementById('next-subject').innerText = "Hoàn thành!"; return; }
+            if (!next) { document.getElementById('next-subject').innerText = "Kỳ thi kết thúc!"; return; }
             document.getElementById('next-subject').innerText = next.sub;
             const diff = new Date(next.date + 'T13:30:00') - new Date();
             document.getElementById('cd-days').innerText = Math.floor(diff / 864e5).toString().padStart(2, '0');
