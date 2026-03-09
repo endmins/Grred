@@ -157,7 +157,7 @@
 
         <div class="max-w-sm mx-auto mb-12">
             <div class="flex justify-between items-center mb-2 px-1">
-                <span class="text-[10px] font-black uppercase tracking-widest opacity-40 text-secondary">Tiến độ kỳ thi</span>
+                <span class="text-[10px] font-black uppercase tracking-widest opacity-50 text-secondary" id="progress-label">Tiến độ kỳ thi</span>
                 <span id="progress-text" class="text-[12px] font-black" style="color: #ffcc00;">0%</span>
             </div>
             <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
@@ -205,29 +205,25 @@
         var player;
         function onYouTubeIframeAPIReady() { 
             player = new YT.Player('yt-player', { 
-                height: '0', 
-                width: '0', 
-                videoId: 'yJ6Lbsmb1lY',
+                height: '0', width: '0', videoId: 'yJ6Lbsmb1lY',
                 playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'yJ6Lbsmb1lY' },
                 events: {
                     'onReady': (event) => {
                         event.target.playVideo();
-                        // Fallback: Nếu trình duyệt chặn, phát ngay khi có tương tác đầu tiên
                         document.addEventListener('click', () => {
                             if (!isPlaying) toggleMusic();
-                        }, { once: true });
-                        document.addEventListener('touchstart', () => {
-                            if (!isPlaying) toggleMusic();
+                            // Trigger Motion Permission for iOS
+                            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                                DeviceMotionEvent.requestPermission().catch(console.error);
+                            }
                         }, { once: true });
                     },
                     'onStateChange': (event) => {
                         const icon = document.getElementById('play-icon');
                         if (event.data === YT.PlayerState.PLAYING) {
-                            isPlaying = true;
-                            icon.className = 'ph-fill ph-pause text-xl';
+                            isPlaying = true; icon.className = 'ph-fill ph-pause text-xl';
                         } else {
-                            isPlaying = false;
-                            icon.className = 'ph-fill ph-play text-xl';
+                            isPlaying = false; icon.className = 'ph-fill ph-play text-xl';
                         }
                     }
                 }
@@ -264,26 +260,8 @@
             grid.innerHTML = schedules.map(item => {
                 let status = ''; const endTime = new Date(item.date + 'T17:00:00');
                 if (now > endTime) status = 'status-past'; else if (item.date === today) status = 'status-today';
-                return `
-                <div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}">
-                    <div class="flex items-center gap-5">
-                        <div class="date-container">
-                            <div class="date-blue">
-                                <span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span>
-                                <span class="text-2xl font-black text-white">${item.date.split('-')[2]}</span>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>
-                                ${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}
-                            </div>
-                            <div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div>
-                        </div>
-                    </div>
-                    ${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}
-                </div>`;
+                const d = item.date.split('-')[2];
+                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
             }).join('');
         }
 
@@ -306,7 +284,7 @@
         }
 
         // EASTER EGGS LOGIC
-        // 1. Konami Code (PC) / Specific Tap Pattern (Mobile)
+        // 1. Konami Code (PC)
         let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
         let konamiIndex = 0;
         document.addEventListener('keydown', (e) => {
@@ -329,18 +307,29 @@
             }
         });
 
-        // 3. Shake Egg (Mobile)
+        // 3. Shake Egg (Mobile) - Added Permission request on first click
         let lastShake = 0;
         window.addEventListener('devicemotion', (e) => {
-            let acc = e.accelerationIncludingGravity;
+            let acc = e.accelerationIncludingGravity || e.acceleration;
             if (!acc) return;
             let total = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
-            if (total > 30) {
+            if (total > 25) { // Sensitivity lowered slightly
                 let now = Date.now();
                 if (now - lastShake > 2000) {
                     document.body.classList.toggle('rainbow-blobs');
                     lastShake = now;
                 }
+            }
+        });
+
+        // 4. Triple Tap Backup (Mobile)
+        let tapCount = 0;
+        document.getElementById('progress-label').addEventListener('click', () => {
+            tapCount++;
+            setTimeout(() => { tapCount = 0; }, 500);
+            if (tapCount === 3) {
+                document.body.classList.toggle('rainbow-blobs');
+                tapCount = 0;
             }
         });
 
