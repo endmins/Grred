@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>7A4 • Coni • Surface Stud.</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Fallback for SF Pro on non-Apple devices -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         :root {
-            /* DARK MODE (DEFAULT) */
             --glass-bg: rgba(20, 20, 22, 0.82);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-primary: #ffffff;
@@ -31,26 +31,22 @@
             --border-sep: rgba(0, 0, 0, 0.1);
         }
 
-        /* RAINBOW MODE ACTIVATED */
-        body.rainbow-mode {
-            animation: rainbow-anim 8s infinite linear;
-        }
-        @keyframes rainbow-anim {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
+        /* PROTECTION & FONT STYLES */
+        * {
+            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+            -webkit-user-drag: none;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            /* APPLE SAN FRANCISCO FONT STACK */
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Inter", sans-serif;
+            -webkit-font-smoothing: antialiased;
             background-color: #000;
             background-image: url('1.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-size: cover; background-position: center; background-attachment: fixed;
             color: var(--text-primary);
             transition: background-color 0.4s ease, color 0.4s ease;
-            min-height: 100vh;
-            overflow-x: hidden;
+            min-height: 100vh; overflow-x: hidden;
         }
 
         .apple-glass {
@@ -62,50 +58,35 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
-        .bar-bg {
-            background: rgba(120, 120, 128, 0.15);
-            height: 8px; border-radius: 10px; overflow: hidden;
-        }
-        .bar-fill {
-            height: 100%; background: var(--accent-yellow); width: 0%;
-            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
-        }
+        .bar-bg { background: rgba(120, 120, 128, 0.15); height: 8px; border-radius: 10px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--accent-yellow); width: 0%; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 15px rgba(255, 204, 0, 0.4); }
 
-        .date-container {
-            display: flex; align-items: center; gap: 15px;
-            padding-right: 15px; border-right: 1px solid var(--border-sep);
-        }
-        .date-blue {
-            background: var(--blue-box);
-            width: 56px; height: 56px;
-            border-radius: var(--radius-sm);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            box-shadow: 0 5px 15px rgba(0, 113, 227, 0.3);
-        }
+        .date-container { display: flex; align-items: center; gap: 15px; padding-right: 15px; border-right: 1px solid var(--border-sep); }
+        .date-blue { background: var(--blue-box); width: 56px; height: 56px; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0, 113, 227, 0.3); }
 
         .status-past { opacity: 0.45; filter: grayscale(0.6); }
         .status-today { border: 2px solid var(--blue-box) !important; background: rgba(0, 113, 227, 0.05); }
 
-        .music-pop {
-            position: fixed; bottom: 30px; left: 50%;
-            transform: translateX(-50%);
-            width: 92%; max-width: 380px;
-            z-index: 1000; padding: 12px 20px;
-        }
+        .music-pop { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; z-index: 1000; padding: 12px 20px; }
 
-        /* Liquid PC */
+        body.rainbow-mode { animation: rainbow-anim 8s infinite linear; }
+        @keyframes rainbow-anim { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+
         .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: url(#goo); opacity: 0.4; pointer-events: none; }
         .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #ff00ea); border-radius: 50%; }
 
         @media (max-width: 1024px) { .liquid-bg { display: none; } }
-        
-        #next-exam-section { user-select: none; -webkit-user-select: none; cursor: pointer; }
+        #next-exam-section { cursor: pointer; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-<body>
+<body oncontextmenu="return false;">
+
+    <script>
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) || (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0))) return false;
+        };
+    </script>
 
     <div class="liquid-bg">
         <div class="blob" id="b1" style="top: 10%; left: 10%;"></div>
@@ -124,26 +105,24 @@
     </nav>
 
     <main class="max-w-3xl mx-auto px-4">
-        
         <section class="apple-glass p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6" id="next-exam-section">
             <div class="text-center md:text-left">
                 <span class="text-[11px] font-bold uppercase tracking-widest text-secondary block mb-1 opacity-60">Môn thi tiếp theo</span>
-                <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
+                <h3 id="next-subject" class="text-2xl font-black tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
             </div>
-            
             <div class="flex gap-6 items-center">
                 <div class="text-center">
-                    <div id="cd-days" class="text-4xl font-extrabold">00</div>
+                    <div id="cd-days" class="text-4xl font-bold">00</div>
                     <span class="text-[9px] uppercase font-bold opacity-40">Ngày</span>
                 </div>
                 <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
-                    <div id="cd-hours" class="text-4xl font-extrabold">00</div>
+                    <div id="cd-hours" class="text-4xl font-bold">00</div>
                     <span class="text-[9px] uppercase font-bold opacity-40">Giờ</span>
                 </div>
                 <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
-                    <div id="cd-mins" class="text-4xl font-extrabold">00</div>
+                    <div id="cd-mins" class="text-4xl font-bold">00</div>
                     <span class="text-[9px] uppercase font-bold opacity-40">Phút</span>
                 </div>
             </div>
@@ -151,7 +130,7 @@
 
         <div class="max-w-sm mx-auto mb-12">
             <div class="flex justify-between items-center mb-2 px-1">
-                <span class="text-[10px] font-black uppercase tracking-widest opacity-50 text-secondary" id="progress-label">Tiến độ kỳ thi</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest opacity-40 text-secondary" id="progress-label">Tiến độ kỳ thi</span>
                 <span id="progress-text" class="text-[12px] font-black" style="color: #ffcc00;">0%</span>
             </div>
             <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
@@ -212,10 +191,7 @@
             }); 
         }
         let isPlaying = false;
-        function toggleMusic() {
-            const icon = document.getElementById('play-icon');
-            if (isPlaying) { player.pauseVideo(); } else { player.playVideo(); }
-        }
+        function toggleMusic() { const icon = document.getElementById('play-icon'); if (isPlaying) { player.pauseVideo(); } else { player.playVideo(); } }
 
         const schedules = [
             { date: "2026-03-10", day: "T3", sub: "Công nghệ", time: "14:25 - 15:10", label: "Tiết 2", split: false },
@@ -242,7 +218,7 @@
                 let status = ''; const endTime = new Date(item.date + 'T17:00:00');
                 if (now > endTime) status = 'status-past'; else if (item.date === today) status = 'status-today';
                 const d = item.date.split('-')[2];
-                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
+                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-bold text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-bold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
             }).join('');
         }
 
@@ -264,11 +240,9 @@
             document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
         }
 
-        // --- EASTER EGGS ---
         let holdTimer;
         const examSection = document.getElementById('next-exam-section');
         const triggerRainbow = () => { document.body.classList.toggle('rainbow-mode'); };
-        
         examSection.addEventListener('mousedown', () => { holdTimer = setTimeout(triggerRainbow, 2000); });
         examSection.addEventListener('mouseup', () => clearTimeout(holdTimer));
         examSection.addEventListener('touchstart', () => { holdTimer = setTimeout(triggerRainbow, 2000); });
@@ -276,10 +250,7 @@
 
         document.getElementById('credit-7a4').addEventListener('click', () => {
             window.clickCnt = (window.clickCnt || 0) + 1;
-            if (window.clickCnt === 7) {
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 }, colors: ['#0071e3', '#ffcc00', '#ff00ea'] });
-                window.clickCnt = 0;
-            }
+            if (window.clickCnt === 7) { confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 }, colors: ['#0071e3', '#ffcc00', '#ff00ea'] }); window.clickCnt = 0; }
         });
 
         document.getElementById('progress-label').addEventListener('click', () => {

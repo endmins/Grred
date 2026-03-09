@@ -6,6 +6,7 @@
     <title>7A4 - CONI | Lite Mode</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; }
         body { font-family: sans-serif; background: #f4f4f9; color: #333; padding: 20px; }
         .card { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .date-box { background: #0071e3; color: #fff; padding: 10px; border-radius: 10px; text-align: center; min-width: 50px; }
@@ -16,9 +17,11 @@
         .btn-back { display: block; text-align: center; color: #0071e3; text-decoration: none; margin-top: 20px; font-weight: bold; }
     </style>
 </head>
-<body>
-    <!-- Hide .html Script -->
+<body oncontextmenu="return false;">
     <script>
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) || (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0))) return false;
+        };
         if (window.location.href.indexOf('.html') > -1 && window.location.protocol !== 'file:') {
             var newUrl = window.location.href.split('.html')[0];
             window.history.replaceState(null, '', newUrl);
