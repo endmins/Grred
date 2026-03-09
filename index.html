@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7A4 - CONI | Cổng Thông Tin Lịch Thi</title>
+    <title>7A4 - CONI | Lịch Thi Chiều - Chính Xác</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.4);
             --text-primary: #1d1d1f;
             --text-secondary: #48484a;
-            --accent: #0071e3;
-            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .dark-mode {
-            --glass-bg: rgba(28, 28, 30, 0.7);
+            --glass-bg: rgba(28, 28, 30, 0.75);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-primary: #f5f5f7;
             --text-secondary: #a1a1a6;
-            --accent: #0a84ff;
-            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
             background-image: url('1.png');
             background-size: cover;
             background-position: center;
@@ -35,28 +31,17 @@
             color: var(--text-primary);
             transition: all 0.5s ease;
             min-height: 100vh;
-            margin: 0;
-            padding: 0;
         }
 
-        /* Apple Glassmorphism */
         .apple-glass {
             background: var(--glass-bg);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
             border: 1px solid var(--glass-border);
-            box-shadow: var(--card-shadow);
             border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
         }
 
-        .shimmer-card {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .shimmer-card:hover {
-            transform: scale(1.02);
-        }
-
-        /* Toggle Button */
         .toggle-switch {
             width: 50px; height: 28px;
             background: rgba(120, 120, 128, 0.3);
@@ -74,7 +59,6 @@
         }
         .dark-mode .toggle-dot { transform: translateX(22px); }
 
-        /* Tabs */
         .tab-group {
             background: rgba(120, 120, 128, 0.15);
             padding: 4px;
@@ -85,7 +69,7 @@
             padding: 10px 0;
             border-radius: 10px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.2s;
             flex: 1;
             text-align: center;
@@ -98,45 +82,33 @@
         }
         .dark-mode .tab-active { background: #636366; color: white; }
 
-        /* Music Bar */
         .music-widget {
             position: fixed;
             bottom: 30px; left: 50%;
             transform: translateX(-50%);
-            width: 90%; max-width: 380px;
+            width: 95%; max-width: 400px;
             z-index: 100;
             padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
-        /* Hide YouTube Iframe but keep it for audio */
-        #yt-player {
-            position: absolute;
-            width: 1px; height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
+        #yt-player { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
-    <!-- Top Navigation -->
-    <nav class="max-w-4xl mx-auto flex justify-end items-center mb-16">
+    <nav class="max-w-4xl mx-auto flex justify-end items-center mb-10">
         <div class="toggle-switch" onclick="toggleTheme()">
             <div class="toggle-dot"></div>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="max-w-3xl mx-auto">
         
-        <!-- Countdown -->
+        <!-- Countdown Widget -->
         <section class="apple-glass p-8 mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="text-center md:text-left">
                 <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Môn thi tiếp theo</span>
-                <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight">Đang cập nhật...</h3>
+                <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight">---</h3>
             </div>
             
             <div class="flex gap-6 items-center">
@@ -144,12 +116,12 @@
                     <div id="cd-days" class="text-4xl font-extrabold">00</div>
                     <span class="text-[9px] uppercase font-bold opacity-40">Ngày</span>
                 </div>
-                <div class="w-[1px] h-10 bg-gray-300 dark:bg-gray-600"></div>
+                <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
                     <div id="cd-hours" class="text-4xl font-extrabold">00</div>
                     <span class="text-[9px] uppercase font-bold opacity-40">Giờ</span>
                 </div>
-                <div class="w-[1px] h-10 bg-gray-300 dark:bg-gray-600"></div>
+                <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
                     <div id="cd-mins" class="text-4xl font-extrabold">00</div>
                     <span class="text-[9px] uppercase font-bold opacity-40">Phút</span>
@@ -157,55 +129,49 @@
             </div>
         </section>
 
-        <!-- Selector -->
+        <!-- Grade Selector -->
         <div class="flex justify-center mb-10">
             <div class="tab-group apple-glass p-1 w-full max-w-xs">
-                <button onclick="setGrade(7)" id="tab-7" class="tab-item tab-active">Khối 7</button>
-                <button onclick="setGrade(8)" id="tab-8" class="tab-item">Khối 8</button>
+                <button onclick="setGrade(7)" id="tab-7" class="tab-item tab-active">Khối 7 (Chiều)</button>
+                <button onclick="setGrade(8)" id="tab-8" class="tab-item">Khối 8 (Chiều)</button>
             </div>
         </div>
 
-        <!-- Quote -->
-        <div class="text-center mb-12 px-6 py-4 apple-glass mx-auto max-w-lg">
-            <p id="quote-text" class="text-sm italic font-medium opacity-70">"Thành công là tổng hợp của những nỗ lực nhỏ bé."</p>
-        </div>
-
-        <!-- Schedule -->
-        <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-32">
+        <!-- Schedule Grid -->
+        <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-40">
             <!-- Dynamic Content -->
         </div>
 
-        <!-- Footer Credits -->
+        <!-- Footer -->
         <footer class="text-center pb-40">
-            <div class="h-[1px] w-20 bg-gray-300 dark:bg-gray-600 mx-auto mb-10"></div>
+            <div class="h-[1px] w-20 bg-gray-400 opacity-20 mx-auto mb-10"></div>
             <p class="text-[10px] font-black uppercase tracking-[0.5em] opacity-30 mb-4">Người thực hiện</p>
             <h2 class="text-3xl font-black tracking-tighter mb-4">7A4 • <span class="text-blue-500">CONI</span></h2>
-            <p class="text-xs font-semibold opacity-40">© 2026 - THCS CONI. Chúc bạn thi tốt!</p>
+            <p class="text-xs font-semibold opacity-40 italic">© 2026 - Chúc tập thể 7A4 có một kỳ thi bùng nổ!</p>
         </footer>
 
     </main>
 
     <!-- Music Player -->
-    <div class="music-widget apple-glass">
+    <div class="music-widget apple-glass flex items-center justify-between shadow-2xl">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white">
+            <div class="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center text-white shadow-lg animate-pulse">
                 <i class="ph-fill ph-music-notes"></i>
             </div>
             <div>
-                <h4 class="text-xs font-bold leading-none mb-1">YouTube Chill</h4>
-                <p class="text-[10px] opacity-60">Nhạc thư giãn học tập</p>
+                <h4 class="text-xs font-bold leading-none mb-1">YouTube Lofi Study</h4>
+                <p class="text-[10px] opacity-60">Giai điệu thư giãn tập trung</p>
             </div>
         </div>
-        <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full">
+        <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-white/40 rounded-full hover:bg-white/60 transition-all">
             <i class="ph-fill ph-play text-xl" id="play-icon"></i>
         </button>
     </div>
 
-    <!-- Hidden YouTube Player -->
     <div id="yt-player"></div>
 
     <script>
-        // Load YouTube IFrame Player API
+        // YouTube API
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -214,17 +180,9 @@
         var player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('yt-player', {
-                height: '0',
-                width: '0',
-                videoId: 'yJ6Lbsmb1lY',
-                events: {
-                    'onReady': onPlayerReady
-                }
+                height: '0', width: '0', videoId: 'yJ6Lbsmb1lY',
+                events: { 'onReady': () => {} }
             });
-        }
-
-        function onPlayerReady(event) {
-            // Player is ready
         }
 
         let isPlaying = false;
@@ -240,38 +198,33 @@
             isPlaying = !isPlaying;
         }
 
+        // LỊCH KIỂM TRA CHÍNH XÁC (HỆ CHIỀU)
         const schedules = {
             7: [
-                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45p", icon: "ph-cpu" },
-                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90p", icon: "ph-notebook" },
-                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90p", icon: "ph-flask" },
-                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60p", icon: "ph-translate" },
-                { date: "2026-03-16", day: "Thứ 2", sub: "Toán học", time: "90p", icon: "ph-calculator" },
-                { date: "2026-03-17", day: "Thứ 3", sub: "Lịch sử & Địa lý", time: "60p", icon: "ph-map-trifold" },
+                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45p", shift: "Tiết 2", note: "" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Lịch sử", time: "45p", shift: "Tiết 2", note: "" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Địa lí", time: "45p", shift: "Tiết 3", note: "" },
+                { date: "2026-03-12", day: "Thứ 5", sub: "GDCD", time: "45p", shift: "Tiết 2", note: "" },
+                { date: "2026-03-13", day: "Thứ 6", sub: "KHTN", time: "90p", shift: "Tiết 2, 3", note: "" },
+                { date: "2026-03-16", day: "Thứ 2", sub: "Tiếng Anh 7", time: "60p", shift: "13h30 - 14h30", note: "" },
+                { date: "2026-03-18", day: "Thứ 4", sub: "Ngữ văn 7", time: "90p", shift: "Ca 1 (13h30 - 15h00)", note: "" },
+                { date: "2026-03-19", day: "Thứ 5", sub: "Toán 7", time: "90p", shift: "Ca 1 (13h30 - 15h00)", note: "" },
             ],
             8: [
-                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45p", icon: "ph-cpu" },
-                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90p", icon: "ph-notebook" },
-                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90p", icon: "ph-flask" },
-                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60p", icon: "ph-translate" },
-                { date: "2026-03-16", day: "Thứ 2", sub: "Toán học", time: "90p", icon: "ph-calculator" },
-                { date: "2026-03-17", day: "Thứ 3", sub: "GDCD", time: "45p", icon: "ph-scales" },
+                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45p", shift: "Tiết 2", note: "" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Lịch sử", time: "45p", shift: "Tiết 2", note: "" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Địa lí", time: "45p", shift: "Tiết 3", note: "" },
+                { date: "2026-03-12", day: "Thứ 5", sub: "GDCD", time: "45p", shift: "Tiết 2", note: "" },
+                { date: "2026-03-13", day: "Thứ 6", sub: "KHTN", time: "90p", shift: "Tiết 2, 3", note: "" },
+                { date: "2026-03-17", day: "Thứ 3", sub: "Tiếng Anh 8", time: "60p", shift: "13h30 - 14h30", note: "" },
+                { date: "2026-03-18", day: "Thứ 4", sub: "Ngữ văn 8", time: "90p", shift: "Ca 2 (15h30 - 17h00)", note: "" },
+                { date: "2026-03-19", day: "Thứ 5", sub: "Toán 8", time: "90p", shift: "Ca 2 (15h30 - 17h00)", note: "" },
             ]
         };
 
-        const quotes = [
-            "Học tập là hạt giống của kiến thức.",
-            "Hãy là phiên bản tốt nhất của chính bạn.",
-            "Bình tĩnh, tự tin, chiến thắng!",
-            "7A4 - Một người vì mọi người.",
-            "Thành công nằm trong tầm tay bạn."
-        ];
-
         let currentGrade = 7;
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-        }
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
 
         function setGrade(grade) {
             currentGrade = grade;
@@ -291,18 +244,25 @@
                 const d = item.date.split('-');
                 
                 return `
-                <div class="apple-glass p-5 flex items-center justify-between shimmer-card ${isToday ? 'ring-2 ring-blue-500' : ''}">
+                <div class="apple-glass p-5 flex items-center justify-between transition-all duration-300 ${isToday ? 'ring-2 ring-blue-500' : ''}">
                     <div class="flex items-center gap-5">
-                        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex flex-col items-center justify-center">
-                            <span class="text-[9px] font-black uppercase opacity-50">${item.day}</span>
-                            <span class="text-xl font-black text-blue-500">${d[2]}</span>
+                        <div class="w-16 h-16 rounded-2xl bg-blue-500/10 flex flex-col items-center justify-center border border-blue-500/20">
+                            <span class="text-[9px] font-black uppercase opacity-60 text-blue-600">${item.day}</span>
+                            <span class="text-2xl font-black text-blue-500">${d[2]}</span>
                         </div>
                         <div>
-                            <h4 class="font-bold text-lg leading-tight mb-1">${item.sub}</h4>
-                            <p class="opacity-50 text-[10px] font-bold uppercase"><i class="${item.icon}"></i> ${item.time}</p>
+                            <h4 class="font-bold text-lg leading-tight mb-1 text-primary">${item.sub}</h4>
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+                                <span class="text-[10px] font-bold uppercase opacity-60 text-blue-500">
+                                    <i class="ph-bold ph-clock"></i> ${item.time}
+                                </span>
+                                <span class="text-[10px] font-bold uppercase opacity-60">
+                                    <i class="ph-bold ph-calendar"></i> ${item.shift}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    ${isToday ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full">HÔM NAY</span>' : ''}
+                    ${isToday ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}
                 </div>
                 `;
             }).join('');
@@ -311,26 +271,22 @@
         function updateCountdown() {
             const data = schedules[currentGrade];
             const now = new Date();
-            const nextExam = data.find(item => new Date(item.date + 'T07:00:00') > now);
+            // Lịch chiều bắt đầu từ 13h30
+            const nextExam = data.find(item => new Date(item.date + 'T13:30:00') > now);
 
             if (!nextExam) {
-                document.getElementById('next-subject').innerText = "Hoàn thành!";
+                document.getElementById('next-subject').innerText = "Đã hoàn thành!";
                 return;
             }
 
             document.getElementById('next-subject').innerText = nextExam.sub;
-            const target = new Date(nextExam.date + 'T07:00:00');
+            const target = new Date(nextExam.date + 'T13:30:00');
             const diff = target - now;
 
             document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
             document.getElementById('cd-hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
             document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
         }
-
-        setInterval(() => {
-            const q = quotes[Math.floor(Math.random() * quotes.length)];
-            document.getElementById('quote-text').innerText = `"${q}"`;
-        }, 8000);
 
         setGrade(7);
         setInterval(updateCountdown, 1000);
