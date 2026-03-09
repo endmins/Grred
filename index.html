@@ -35,12 +35,12 @@
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
             background-color: #000;
-            background-image: url('1.png'); /* Initial Background */
+            background-image: url('1.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: var(--text-primary);
-            transition: background-color 0.4s ease, color 0.4s ease, background-image 0.4s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -95,10 +95,21 @@
 
         /* Liquid PC */
         .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: url(#goo); opacity: 0.4; pointer-events: none; }
-        .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #a855f7); border-radius: 50%; }
+        .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #ff00ea); border-radius: 50%; transition: filter 1s ease; }
+
+        /* Easter Egg: Rainbow Blobs */
+        .rainbow-blobs .blob {
+            animation: rainbow-cycle 5s infinite linear;
+        }
+        @keyframes rainbow-cycle {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
 
         @media (max-width: 1024px) { .liquid-bg { display: none; } }
     </style>
+    <!-- Confetti Library for Easter Egg -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -147,21 +158,24 @@
         <div class="max-w-sm mx-auto mb-12">
             <div class="flex justify-between items-center mb-2 px-1">
                 <span class="text-[10px] font-black uppercase tracking-widest opacity-40 text-secondary">Tiến độ kỳ thi</span>
-                <span id="progress-text" class="text-[12px] font-black" style="color: var(--accent-yellow);">0%</span>
+                <span id="progress-text" class="text-[12px] font-black" style="color: #ffcc00;">0%</span>
             </div>
             <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
         </div>
 
         <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-40"></div>
 
-        <footer class="text-center pb-48 opacity-80">
+        <footer class="text-center pb-48 opacity-60">
             <div class="h-[1px] w-12 bg-gray-400 opacity-20 mx-auto mb-8"></div>
+            
             <div class="flex flex-col items-center gap-4">
-                <h2 class="text-2xl font-black tracking-tighter text-primary">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
-                <a href="low-end.html" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-600 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
+                <h2 class="text-2xl font-black tracking-tighter" id="credit-7a4">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
+                
+                <a href="low-end.html" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
                     <i class="ph-bold ph-lightning"></i> LAG? Bấm để tối ưu
                 </a>
             </div>
+            
             <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary">© 2026 Collaboration Edition</p>
         </footer>
     </main>
@@ -189,13 +203,41 @@
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         var player;
-        function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'yJ6Lbsmb1lY' }); }
+        function onYouTubeIframeAPIReady() { 
+            player = new YT.Player('yt-player', { 
+                height: '0', 
+                width: '0', 
+                videoId: 'yJ6Lbsmb1lY',
+                playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'yJ6Lbsmb1lY' },
+                events: {
+                    'onReady': (event) => {
+                        event.target.playVideo();
+                        // Fallback: Nếu trình duyệt chặn, phát ngay khi có tương tác đầu tiên
+                        document.addEventListener('click', () => {
+                            if (!isPlaying) toggleMusic();
+                        }, { once: true });
+                        document.addEventListener('touchstart', () => {
+                            if (!isPlaying) toggleMusic();
+                        }, { once: true });
+                    },
+                    'onStateChange': (event) => {
+                        const icon = document.getElementById('play-icon');
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            isPlaying = true;
+                            icon.className = 'ph-fill ph-pause text-xl';
+                        } else {
+                            isPlaying = false;
+                            icon.className = 'ph-fill ph-play text-xl';
+                        }
+                    }
+                }
+            }); 
+        }
         let isPlaying = false;
         function toggleMusic() {
             const icon = document.getElementById('play-icon');
-            if (isPlaying) { player.pauseVideo(); icon.className = 'ph-fill ph-play text-xl'; }
-            else { player.playVideo(); icon.className = 'ph-fill ph-pause text-xl'; }
-            isPlaying = !isPlaying;
+            if (isPlaying) { player.pauseVideo(); }
+            else { player.playVideo(); }
         }
 
         const schedules = [
@@ -213,8 +255,6 @@
             const isLight = document.body.classList.toggle('light-mode');
             const icon = document.getElementById('theme-icon');
             icon.className = isLight ? 'ph-bold ph-moon-stars text-xl' : 'ph-bold ph-sun-dim text-xl';
-            
-            // Automatic Background Change
             document.body.style.backgroundImage = isLight ? "url('2.png')" : "url('1.png')";
         }
 
@@ -265,10 +305,46 @@
             document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
         }
 
-        // Init
-        render();
-        updateCountdown();
-        updateProgress();
+        // EASTER EGGS LOGIC
+        // 1. Konami Code (PC) / Specific Tap Pattern (Mobile)
+        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    document.body.classList.toggle('rainbow-blobs');
+                    konamiIndex = 0;
+                }
+            } else { konamiIndex = 0; }
+        });
+
+        // 2. 7-Clicks on Footer (Confetti)
+        let clickCount = 0;
+        document.getElementById('credit-7a4').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 7) {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 }, colors: ['#0071e3', '#ffcc00', '#ff00ea'] });
+                clickCount = 0;
+            }
+        });
+
+        // 3. Shake Egg (Mobile)
+        let lastShake = 0;
+        window.addEventListener('devicemotion', (e) => {
+            let acc = e.accelerationIncludingGravity;
+            if (!acc) return;
+            let total = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+            if (total > 30) {
+                let now = Date.now();
+                if (now - lastShake > 2000) {
+                    document.body.classList.toggle('rainbow-blobs');
+                    lastShake = now;
+                }
+            }
+        });
+
+        render(); updateCountdown(); updateProgress();
         setInterval(updateCountdown, 1000);
     </script>
 </body>
