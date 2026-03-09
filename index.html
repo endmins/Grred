@@ -23,13 +23,21 @@
         }
 
         body.light-mode {
-            /* LIGHT MODE FIX */
             --glass-bg: rgba(255, 255, 255, 0.92);
             --glass-border: rgba(0, 0, 0, 0.08);
             --text-primary: #000000;
             --text-secondary: #48484a;
             --blue-box: #0071e3;
             --border-sep: rgba(0, 0, 0, 0.1);
+        }
+
+        /* RAINBOW MODE ACTIVATED */
+        body.rainbow-mode {
+            animation: rainbow-anim 8s infinite linear;
+        }
+        @keyframes rainbow-anim {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
         }
 
         body {
@@ -54,7 +62,6 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* Yellow Progress Bar */
         .bar-bg {
             background: rgba(120, 120, 128, 0.15);
             height: 8px; border-radius: 10px; overflow: hidden;
@@ -65,14 +72,9 @@
             box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
         }
 
-        /* Date Icon Blue Box with Divider */
         .date-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-right: 15px;
-            border-right: 1px solid var(--border-sep);
-            shrink-0;
+            display: flex; align-items: center; gap: 15px;
+            padding-right: 15px; border-right: 1px solid var(--border-sep);
         }
         .date-blue {
             background: var(--blue-box);
@@ -95,23 +97,12 @@
 
         /* Liquid PC */
         .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: url(#goo); opacity: 0.4; pointer-events: none; }
-        .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #ff00ea); border-radius: 50%; transition: filter 1s ease; }
-
-        /* Easter Egg: Rainbow Blobs */
-        .rainbow-blobs .blob {
-            animation: rainbow-cycle 5s infinite linear;
-        }
-        @keyframes rainbow-cycle {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
+        .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #ff00ea); border-radius: 50%; }
 
         @media (max-width: 1024px) { .liquid-bg { display: none; } }
         
-        /* Prevent text selection on long press egg */
-        #next-exam-section { user-select: none; -webkit-user-select: none; }
+        #next-exam-section { user-select: none; -webkit-user-select: none; cursor: pointer; }
     </style>
-    <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -170,15 +161,12 @@
 
         <footer class="text-center pb-48 opacity-60">
             <div class="h-[1px] w-12 bg-gray-400 opacity-20 mx-auto mb-8"></div>
-            
             <div class="flex flex-col items-center gap-4">
                 <h2 class="text-2xl font-black tracking-tighter" id="credit-7a4">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
-                
                 <a href="low-end.html" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
                     <i class="ph-bold ph-lightning"></i> LAG? Bấm để tối ưu
                 </a>
             </div>
-            
             <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary" id="quote-text">© 2026 Collaboration Edition</p>
         </footer>
     </main>
@@ -226,8 +214,7 @@
         let isPlaying = false;
         function toggleMusic() {
             const icon = document.getElementById('play-icon');
-            if (isPlaying) { player.pauseVideo(); }
-            else { player.playVideo(); }
+            if (isPlaying) { player.pauseVideo(); } else { player.playVideo(); }
         }
 
         const schedules = [
@@ -255,7 +242,7 @@
                 let status = ''; const endTime = new Date(item.date + 'T17:00:00');
                 if (now > endTime) status = 'status-past'; else if (item.date === today) status = 'status-today';
                 const d = item.date.split('-')[2];
-                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-500">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
+                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
             }).join('');
         }
 
@@ -277,47 +264,44 @@
             document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
         }
 
-        // --- NEW EASTER EGGS LOGIC ---
-        
-        // 1. Long Press on Countdown (Mobile/PC)
+        // --- EASTER EGGS ---
         let holdTimer;
         const examSection = document.getElementById('next-exam-section');
-        examSection.addEventListener('mousedown', () => { holdTimer = setTimeout(() => document.body.classList.toggle('rainbow-blobs'), 2000); });
+        const triggerRainbow = () => { document.body.classList.toggle('rainbow-mode'); };
+        
+        examSection.addEventListener('mousedown', () => { holdTimer = setTimeout(triggerRainbow, 2000); });
         examSection.addEventListener('mouseup', () => clearTimeout(holdTimer));
-        examSection.addEventListener('touchstart', () => { holdTimer = setTimeout(() => document.body.classList.toggle('rainbow-blobs'), 2000); });
+        examSection.addEventListener('touchstart', () => { holdTimer = setTimeout(triggerRainbow, 2000); });
         examSection.addEventListener('touchend', () => clearTimeout(holdTimer));
 
-        // 2. 7-Clicks on Footer (Confetti)
-        let clickCount = 0;
         document.getElementById('credit-7a4').addEventListener('click', () => {
-            clickCount++;
-            if (clickCount === 7) {
+            window.clickCnt = (window.clickCnt || 0) + 1;
+            if (window.clickCnt === 7) {
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 }, colors: ['#0071e3', '#ffcc00', '#ff00ea'] });
-                clickCount = 0;
+                window.clickCnt = 0;
             }
         });
 
-        // 3. Late Night / Midnight Egg (00:00 - 05:00)
+        document.getElementById('progress-label').addEventListener('click', () => {
+            window.tapCnt = (window.tapCnt || 0) + 1;
+            setTimeout(() => { window.tapCnt = 0; }, 1000);
+            if (window.tapCnt === 3) triggerRainbow();
+        });
+
         function checkMidnight() {
-            const hours = new Date().getHours();
-            if (hours >= 0 && hours < 5) {
-                document.getElementById('quote-text').innerText = "Ngủ đi các thiên tài 7A4, mai còn đi thi! 😴";
-            }
+            const h = new Date().getHours();
+            if (h >= 0 && h < 5) document.getElementById('quote-text').innerText = "Ngủ đi các thiên tài 7A4, mai còn đi thi! 😴";
         }
 
-        // 4. Konami Code (PC)
-        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let konamiIndex = 0;
+        let konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let kIdx = 0;
         document.addEventListener('keydown', (e) => {
-            if (e.key === konamiCode[konamiIndex]) {
-                konamiIndex++;
-                if (konamiIndex === konamiCode.length) { document.body.classList.toggle('rainbow-blobs'); konamiIndex = 0; }
-            } else { konamiIndex = 0; }
+            if (e.key === konami[kIdx]) { kIdx++; if (kIdx === konami.length) { triggerRainbow(); kIdx = 0; } }
+            else { kIdx = 0; }
         });
 
         render(); updateCountdown(); updateProgress(); checkMidnight();
-        setInterval(updateCountdown, 1000);
-        setInterval(checkMidnight, 60000);
+        setInterval(updateCountdown, 1000); setInterval(checkMidnight, 60000);
     </script>
 </body>
 </html>
