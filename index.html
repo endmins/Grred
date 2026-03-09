@@ -3,365 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>7A4 - CONI | Premium Exam Portal</title>
+    <title>7A4 - CONI | Cổng Thông Tin Lịch Thi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         :root {
-            --bg: #0a0c10;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.3);
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #0071e3;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
         }
 
-        .light-mode {
-            --bg: #f8fafc;
-            --glass: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(0, 0, 0, 0.05);
-            --accent: #4f46e5;
-            --accent-glow: rgba(79, 70, 229, 0.1);
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
+        .dark-mode {
+            --glass-bg: rgba(28, 28, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --accent: #0a84ff;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: var(--text-primary);
-            transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-x: hidden;
+            transition: all 0.5s ease;
             min-height: 100vh;
         }
 
-        h1, h2, .font-outfit { font-family: 'Outfit', sans-serif; }
-
-        /* Complex Liquid Background */
-        .canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            filter: url(#gooey);
-        }
-
-        .liquid-blob {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: linear-gradient(45deg, var(--accent), #ec4899);
-            border-radius: 50%;
-            opacity: 0.4;
-            filter: blur(60px);
-        }
-
-        /* Grainy Overlay */
-        .grain {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        /* Advanced Glassmorphism */
-        .glass-panel {
-            background: var(--glass);
-            backdrop-filter: blur(30px) saturate(160%);
-            -webkit-backdrop-filter: blur(30px) saturate(160%);
+        /* Apple Glassmorphism */
+        .apple-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(50px) saturate(200%);
+            -webkit-backdrop-filter: blur(50px) saturate(200%);
             border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: var(--card-shadow);
+            border-radius: 24px;
         }
 
         .shimmer-card {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
         }
-
-        .shimmer-card::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
-            transform: rotate(45deg);
-            transition: 0.8s;
-            pointer-events: none;
-        }
-
-        .shimmer-card:hover::after {
-            left: 100%;
-            top: 100%;
-        }
-
         .shimmer-card:hover {
-            transform: translateY(-8px) scale(1.01);
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px -10px var(--accent-glow);
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .dark-mode .shimmer-card:hover {
+            background: rgba(44, 44, 46, 0.8);
         }
 
-        /* Rotating Music Disk */
-        .music-disk {
-            animation: rotate 8s linear infinite;
-            animation-play-state: paused;
-        }
-        .music-disk.playing { animation-play-state: running; }
-
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* Custom Tabs */
-        .tab-btn {
+        /* Toggle Button */
+        .toggle-switch {
+            width: 54px; height: 30px;
+            background: rgba(120, 120, 128, 0.32);
+            border-radius: 100px;
             position: relative;
-            z-index: 1;
-            transition: color 0.4s;
+            cursor: pointer;
+            transition: background 0.3s;
         }
-        .tab-indicator {
+        .toggle-dot {
+            width: 26px; height: 26px;
+            background: white;
+            border-radius: 100px;
             position: absolute;
-            bottom: 0; left: 0; height: 100%; width: 50%;
-            background: var(--accent);
+            top: 2px; left: 2px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .dark-mode .toggle-dot { transform: translateX(24px); }
+
+        /* Tabs */
+        .tab-group {
+            background: rgba(120, 120, 128, 0.12);
+            padding: 3px;
             border-radius: 12px;
-            z-index: 0;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+        }
+        .tab-item {
+            padding: 8px 24px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+        .tab-active {
+            background: white;
+            color: black;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+        }
+        .dark-mode .tab-active { background: #636366; color: white; }
+
+        /* Music Bar */
+        .music-widget {
+            position: fixed;
+            bottom: 24px; left: 50%;
+            transform: translateX(-50%);
+            width: 90%; max-width: 400px;
+            z-index: 100;
+            padding: 12px 16px;
         }
 
-        /* Glow Effects */
-        .accent-glow { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
-        
-        .status-dot {
-            width: 8px; height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            box-shadow: 0 0 12px #10b981;
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        /* Responsive Text Fixes */
-        @media (max-width: 640px) {
-            .glass-panel { border-radius: 20px; }
-            .countdown-box { gap: 1rem !important; }
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-10">
 
-    <div class="grain"></div>
-
-    <!-- Gooey Background -->
-    <div class="canvas-container">
-        <div class="liquid-blob" id="blob1" style="top: 10%; left: 10%;"></div>
-        <div class="liquid-blob" id="blob2" style="bottom: 10%; right: 10%; background: linear-gradient(45deg, #a855f7, #6366f1);"></div>
-        <div class="liquid-blob" id="blob3" style="top: 40%; left: 40%; width: 400px; height: 400px; background: #ec4899;"></div>
-    </div>
-
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="hidden">
-        <defs>
-            <filter id="gooey">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" />
-                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-            </filter>
-        </defs>
-    </svg>
-
-    <!-- UI Overlay: Top Bar -->
-    <nav class="max-w-6xl mx-auto flex justify-between items-center mb-12 relative z-50">
+    <!-- Top Navigation -->
+    <nav class="max-w-4xl mx-auto flex justify-between items-center mb-16">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 glass-panel flex items-center justify-center">
-                <i class="ph-bold ph-lightning accent-glow text-xl"></i>
+            <div class="w-10 h-10 apple-glass flex items-center justify-center">
+                <i class="ph-fill ph-calendar-check text-blue-500 text-xl"></i>
             </div>
             <div>
-                <h2 class="font-outfit font-black text-xl tracking-tighter">7A4 • <span class="accent-glow">CONI</span></h2>
-                <div class="flex items-center text-[10px] uppercase tracking-widest font-bold opacity-50">
-                    <span class="status-dot"></span> System Live
-                </div>
+                <span class="text-[10px] font-black uppercase tracking-widest opacity-40">Hệ thống</span>
+                <h2 class="font-extrabold text-lg tracking-tight">7A4 CONI</h2>
             </div>
         </div>
         
-        <div class="flex items-center gap-4">
-            <div class="glass-panel p-1.5 flex gap-2">
-                <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition-colors">
-                    <i class="ph-bold ph-moon-stars text-xl" id="theme-icon"></i>
-                </button>
-            </div>
+        <div class="toggle-switch" onclick="toggleTheme()">
+            <div class="toggle-dot"></div>
         </div>
     </nav>
 
-    <!-- Main Experience -->
-    <main class="max-w-4xl mx-auto relative z-10">
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto">
         
-        <!-- Hero Section -->
-        <section class="text-center mb-16" id="hero">
-            <span class="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[11px] font-black tracking-widest uppercase mb-6">
-                Official Mid-Term Examination Schedule
-            </span>
-            <h1 class="text-5xl md:text-7xl font-outfit font-black mb-6 tracking-tight leading-[1.1]">
-                Master Your <br><span class="accent-glow">Future.</span>
-            </h1>
-            <p class="text-lg text-secondary max-w-xl mx-auto font-medium leading-relaxed">
-                Stay focused, stay calm. The road to success for <span class="text-white font-bold">Class 7A4</span> starts with a clear plan.
+        <!-- Intro -->
+        <header class="text-center mb-12">
+            <span class="text-blue-500 font-bold text-sm tracking-tight mb-2 block">Lịch Thi Giữa HKII</span>
+            <p class="text-secondary max-w-md mx-auto text-lg font-medium leading-tight">
+                Hãy chuẩn bị thật tốt. Thành công của <span class="text-primary font-bold">7A4</span> là kết quả của sự nỗ lực không ngừng.
             </p>
-        </section>
+        </header>
 
-        <!-- Dynamic Countdown Widget -->
-        <section class="glass-panel p-8 mb-12 flex flex-col md:flex-row items-center justify-between gap-8 border-white/5 relative overflow-hidden" id="countdown-widget">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-accent/10 blur-3xl rounded-full"></div>
+        <!-- Countdown -->
+        <section class="apple-glass p-8 mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+                <span class="text-xs font-bold uppercase tracking-widest text-secondary block mb-1">Môn thi tiếp theo</span>
+                <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight">Đang cập nhật...</h3>
+            </div>
             
-            <div class="flex flex-col gap-1">
-                <span class="text-xs font-black uppercase tracking-widest text-secondary">Next Objective</span>
-                <h3 id="next-subject" class="text-3xl font-outfit font-bold accent-glow">Loading...</h3>
-                <p class="text-sm opacity-50">THCS CONI • Academic Year 25-26</p>
-            </div>
-
-            <div class="flex gap-6 countdown-box">
+            <div class="flex gap-6 items-center">
                 <div class="text-center">
-                    <div id="cd-days" class="text-5xl font-outfit font-black mb-1">00</div>
-                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Days</span>
+                    <div id="cd-days" class="text-4xl font-extrabold">00</div>
+                    <span class="text-[9px] uppercase font-bold opacity-40">Ngày</span>
                 </div>
-                <div class="h-12 w-[1px] bg-white/10 self-center"></div>
+                <div class="w-[1px] h-10 bg-gray-300 dark:bg-gray-600"></div>
                 <div class="text-center">
-                    <div id="cd-hours" class="text-5xl font-outfit font-black mb-1">00</div>
-                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Hours</span>
+                    <div id="cd-hours" class="text-4xl font-extrabold">00</div>
+                    <span class="text-[9px] uppercase font-bold opacity-40">Giờ</span>
                 </div>
-                <div class="h-12 w-[1px] bg-white/10 self-center"></div>
+                <div class="w-[1px] h-10 bg-gray-300 dark:bg-gray-600"></div>
                 <div class="text-center">
-                    <div id="cd-mins" class="text-5xl font-outfit font-black mb-1">00</div>
-                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40">Mins</span>
+                    <div id="cd-mins" class="text-4xl font-extrabold">00</div>
+                    <span class="text-[9px] uppercase font-bold opacity-40">Phút</span>
                 </div>
             </div>
         </section>
 
-        <!-- Controls -->
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
-            <div class="glass-panel p-1.5 flex relative w-full md:w-auto overflow-hidden">
-                <div id="tab-indicator" class="tab-indicator"></div>
-                <button onclick="setGrade(7)" class="tab-btn px-10 py-3 rounded-xl text-sm font-bold w-1/2 md:w-auto text-white" id="tab-7">Grade 7</button>
-                <button onclick="setGrade(8)" class="tab-btn px-10 py-3 rounded-xl text-sm font-bold w-1/2 md:w-auto" id="tab-8">Grade 8</button>
-            </div>
-
-            <div class="flex items-center gap-4 glass-panel px-6 py-3 w-full md:w-auto">
-                <i class="ph-bold ph-quotes accent-glow"></i>
-                <p id="quote-text" class="text-sm italic font-medium opacity-80 truncate max-w-[300px]">"Success is the sum of small efforts."</p>
+        <!-- Selector -->
+        <div class="flex justify-center mb-10">
+            <div class="tab-group apple-glass p-1 w-full max-w-xs">
+                <button onclick="setGrade(7)" id="tab-7" class="tab-item tab-active">Khối 7</button>
+                <button onclick="setGrade(8)" id="tab-8" class="tab-item">Khối 8</button>
             </div>
         </div>
 
-        <!-- Schedule Grid -->
-        <div id="schedule-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+        <!-- Quote -->
+        <div class="text-center mb-12 px-6 py-4 apple-glass mx-auto max-w-lg border-none shadow-sm">
+            <p id="quote-text" class="text-sm italic font-medium opacity-70">"Thành công là tổng hợp của những nỗ lực nhỏ bé."</p>
+        </div>
+
+        <!-- Schedule -->
+        <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-32">
             <!-- Dynamic Content -->
         </div>
 
-        <!-- Music Experience -->
-        <div class="fixed bottom-8 right-8 z-50">
-            <div class="glass-panel p-4 flex items-center gap-5 border-white/10 shadow-2xl">
-                <div class="relative w-14 h-14">
-                    <div class="absolute inset-0 bg-accent/30 blur-xl rounded-full animate-pulse"></div>
-                    <div class="music-disk w-full h-full rounded-full bg-cover bg-center border-4 border-white/10 relative z-10" id="disk-art" style="background-image: url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=2070&auto=format&fit=crop');">
-                        <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
-                            <div class="w-3 h-3 bg-black rounded-full border-2 border-white/20"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] uppercase font-black tracking-widest opacity-40">Ambient Study</span>
-                        <span class="text-xs font-bold truncate w-32">Lofi Night Beats</span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <button onclick="toggleMusic()" id="play-btn" class="text-2xl hover:scale-110 transition-transform accent-glow">
-                            <i class="ph-fill ph-play-circle" id="play-icon"></i>
-                        </button>
-                        <div class="flex gap-0.5 items-end h-3" id="visualizer">
-                            <div class="w-1 h-full bg-accent rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                            <div class="w-1 h-2/3 bg-accent rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                            <div class="w-1 h-1/2 bg-accent rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
-                        </div>
-                    </div>
-                </div>
-                <audio id="bg-music" loop>
-                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-                </audio>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="text-center py-12 border-t border-white/5 opacity-50">
-            <p class="text-xs font-bold uppercase tracking-[0.3em]">Architected with ♡ by <span class="text-white">7A4 - CONI</span></p>
+        <!-- Footer Credits -->
+        <footer class="text-center pb-40">
+            <div class="h-[1px] w-20 bg-gray-300 dark:bg-gray-600 mx-auto mb-10"></div>
+            <p class="text-[10px] font-black uppercase tracking-[0.5em] opacity-30 mb-4">Người thực hiện</p>
+            <h2 class="text-3xl font-black tracking-tighter mb-4">7A4 • <span class="text-blue-500">CONI</span></h2>
+            <p class="text-xs font-semibold opacity-40">© 2026 - THCS CONI. Chúc bạn thi tốt!</p>
         </footer>
 
     </main>
 
+    <!-- Music Player (iOS Style) -->
+    <div class="music-widget apple-glass flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-cover bg-center shadow-md" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop');"></div>
+            <div>
+                <h4 class="text-xs font-bold leading-none mb-1">Study Lofi</h4>
+                <p class="text-[10px] opacity-60">Chill Music for Exam</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="toggleMusic()" class="w-8 h-8 flex items-center justify-center">
+                <i class="ph-fill ph-play text-2xl" id="play-icon"></i>
+            </button>
+        </div>
+        <audio id="bg-music" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
     <script>
         const schedules = {
             7: [
-                { date: "2026-03-10", day: "Tuesday", sub: "Technology", time: "45m", icon: "ph-cpu" },
-                { date: "2026-03-11", day: "Wednesday", sub: "Literature", time: "90m", icon: "ph-books" },
-                { date: "2026-03-12", day: "Thursday", sub: "Science", time: "90m", icon: "ph-atom" },
-                { date: "2026-03-13", day: "Friday", sub: "English", time: "60m", icon: "ph-translate" },
-                { date: "2026-03-16", day: "Monday", sub: "Mathematics", time: "90m", icon: "ph-function" },
-                { date: "2026-03-17", day: "Tuesday", sub: "History & Geo", time: "60m", icon: "ph-globe" },
+                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45p", icon: "ph-cpu" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90p", icon: "ph-notebook" },
+                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90p", icon: "ph-flask" },
+                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60p", icon: "ph-translate" },
+                { date: "2026-03-16", day: "Thứ 2", sub: "Toán học", time: "90p", icon: "ph-calculator" },
+                { date: "2026-03-17", day: "Thứ 3", sub: "Lịch sử & Địa lý", time: "60p", icon: "ph-map-trifold" },
             ],
             8: [
-                { date: "2026-03-10", day: "Tuesday", sub: "Technology", time: "45m", icon: "ph-cpu" },
-                { date: "2026-03-11", day: "Wednesday", sub: "Literature", time: "90m", icon: "ph-books" },
-                { date: "2026-03-12", day: "Thursday", sub: "Science", time: "90m", icon: "ph-atom" },
-                { date: "2026-03-13", day: "Friday", sub: "English", time: "60m", icon: "ph-translate" },
-                { date: "2026-03-16", day: "Monday", sub: "Mathematics", time: "90m", icon: "ph-function" },
-                { date: "2026-03-17", day: "Tuesday", sub: "Civic Ed", time: "45m", icon: "ph-users-three" },
+                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45p", icon: "ph-cpu" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90p", icon: "ph-notebook" },
+                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90p", icon: "ph-flask" },
+                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60p", icon: "ph-translate" },
+                { date: "2026-03-16", day: "Thứ 2", sub: "Toán học", time: "90p", icon: "ph-calculator" },
+                { date: "2026-03-17", day: "Thứ 3", sub: "GDCD", time: "45p", icon: "ph-scales" },
             ]
         };
 
         const quotes = [
-            "Believe you can and you're halfway there.",
-            "Study hard, do good, and the rest will follow.",
-            "Focus on being productive instead of busy.",
-            "The expert in anything was once a beginner.",
-            "7A4 is the best class in CONI!"
+            "Học tập là hạt giống của kiến thức.",
+            "Hãy là phiên bản tốt nhất của chính bạn.",
+            "Bình tĩnh, tự tin, chiến thắng!",
+            "7A4 - Một người vì mọi người.",
+            "Thành công nằm trong tầm tay bạn."
         ];
 
         let currentGrade = 7;
         let isPlaying = false;
 
-        function initAnimations() {
-            gsap.from("#hero > *", { y: 30, opacity: 0, stagger: 0.2, duration: 1, ease: "power4.out" });
-            gsap.from("#countdown-widget", { scale: 0.9, opacity: 0, duration: 1, delay: 0.5, ease: "back.out(1.7)" });
-            
-            // Move blobs
-            gsap.to(".liquid-blob", {
-                x: "random(-100, 100)",
-                y: "random(-100, 100)",
-                duration: "random(10, 20)",
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut",
-                stagger: 2
-            });
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const icon = document.getElementById('theme-icon');
-            icon.className = document.body.classList.contains('light-mode') ? 'ph-bold ph-sun text-xl' : 'ph-bold ph-moon-stars text-xl';
+        function toggleMusic() {
+            const audio = document.getElementById('bg-music');
+            const icon = document.getElementById('play-icon');
+            if (isPlaying) {
+                audio.pause();
+                icon.className = 'ph-fill ph-play text-2xl';
+            } else {
+                audio.play();
+                icon.className = 'ph-fill ph-pause text-2xl';
+            }
+            isPlaying = !isPlaying;
         }
 
         function setGrade(grade) {
             currentGrade = grade;
-            const indicator = document.getElementById('tab-indicator');
-            const t7 = document.getElementById('tab-7');
-            const t8 = document.getElementById('tab-8');
-            
-            indicator.style.left = grade === 7 ? '0' : '50%';
-            t7.style.color = grade === 7 ? 'white' : 'var(--text-secondary)';
-            t8.style.color = grade === 8 ? 'white' : 'var(--text-secondary)';
-
+            document.getElementById('tab-7').classList.toggle('tab-active', grade === 7);
+            document.getElementById('tab-8').classList.toggle('tab-active', grade === 8);
             renderSchedule();
+            updateCountdown();
         }
 
         function renderSchedule() {
@@ -369,56 +279,28 @@
             const data = schedules[currentGrade];
             const today = new Date().toISOString().split('T')[0];
             
-            grid.innerHTML = '';
-            data.forEach((item, index) => {
+            grid.innerHTML = data.map(item => {
                 const isToday = item.date === today;
-                const dateObj = new Date(item.date);
-                const dayNum = dateObj.getDate();
-                const month = dateObj.toLocaleString('en-US', { month: 'short' });
-
-                const card = document.createElement('div');
-                card.className = `glass-panel p-6 shimmer-card flex items-center gap-6 border-white/5 ${isToday ? 'border-indigo-500/50 bg-indigo-500/5' : ''}`;
-                card.innerHTML = `
-                    <div class="flex flex-col items-center justify-center bg-white/5 w-16 h-16 rounded-2xl border border-white/10">
-                        <span class="text-[9px] font-black uppercase tracking-widest opacity-40">${item.day.slice(0,3)}</span>
-                        <span class="text-2xl font-black accent-glow">${dayNum}</span>
-                        <span class="text-[9px] font-bold uppercase opacity-40">${month}</span>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <i class="${item.icon} text-lg text-indigo-400"></i>
-                            <h4 class="font-outfit font-bold text-lg">${item.sub}</h4>
+                const d = item.date.split('-');
+                
+                return `
+                <div class="apple-glass p-5 flex items-center justify-between shimmer-card ${isToday ? 'border-blue-500 border-2' : ''}">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 flex flex-col items-center justify-center">
+                            <span class="text-[9px] font-black uppercase opacity-50">${item.day}</span>
+                            <span class="text-xl font-black text-blue-500">${d[2]}</span>
                         </div>
-                        <div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider opacity-50">
-                            <span><i class="ph-bold ph-clock-countdown"></i> ${item.time}</span>
-                            <span><i class="ph-bold ph-check-circle"></i> Required</span>
+                        <div>
+                            <h4 class="font-bold text-lg leading-tight mb-1">${item.sub}</h4>
+                            <div class="flex items-center gap-3 opacity-50 text-[10px] font-bold">
+                                <span><i class="${item.icon}"></i> THỜI GIAN: ${item.time}</span>
+                            </div>
                         </div>
                     </div>
-                    ${isToday ? '<span class="absolute top-4 right-4 text-[8px] font-black bg-indigo-500 text-white px-2 py-0.5 rounded-full">ACTIVE</span>' : ''}
+                    ${isToday ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full">HÔM NAY</span>' : ''}
+                </div>
                 `;
-                grid.appendChild(card);
-                gsap.from(card, { opacity: 0, x: -20, delay: 0.1 * index });
-            });
-        }
-
-        function toggleMusic() {
-            const audio = document.getElementById('bg-music');
-            const icon = document.getElementById('play-icon');
-            const disk = document.getElementById('disk-art');
-            const visualizer = document.getElementById('visualizer');
-            
-            if (isPlaying) {
-                audio.pause();
-                icon.className = 'ph-fill ph-play-circle';
-                disk.classList.remove('playing');
-                visualizer.style.opacity = '0.3';
-            } else {
-                audio.play();
-                icon.className = 'ph-fill ph-pause-circle';
-                disk.classList.add('playing');
-                visualizer.style.opacity = '1';
-            }
-            isPlaying = !isPlaying;
+            }).join('');
         }
 
         function updateCountdown() {
@@ -427,7 +309,7 @@
             const nextExam = data.find(item => new Date(item.date + 'T07:00:00') > now);
 
             if (!nextExam) {
-                document.getElementById('next-subject').innerText = "Mission Accomplished";
+                document.getElementById('next-subject').innerText = "Hoàn thành!";
                 return;
             }
 
@@ -440,22 +322,14 @@
             document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
         }
 
-        // Quotes Cycle
         setInterval(() => {
-            const quoteText = document.getElementById('quote-text');
-            gsap.to(quoteText, { opacity: 0, duration: 0.5, onComplete: () => {
-                quoteText.innerText = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
-                gsap.to(quoteText, { opacity: 1, duration: 0.5 });
-            }});
-        }, 10000);
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote-text').innerText = `"${q}"`;
+        }, 8000);
 
-        // Initialization
-        window.addEventListener('load', () => {
-            initAnimations();
-            setGrade(7);
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
-        });
+        // Init
+        setGrade(7);
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
