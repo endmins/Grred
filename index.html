@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Thi Giữa HKII</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Sử dụng Phosphor Icons (Gần giống Fluent UI nhất trên CDN) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* Windows 11 Font Stack */
+        body {
+            font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'); /* Windows 11 Abstract Wallpaper Style */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        /* Mica Effect - Glassmorphism */
+        .mica-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .mica-container {
+            background: rgba(243, 243, 243, 0.5);
+            backdrop-filter: blur(50px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Smooth Transitions */
+        .card-anim {
+            transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+        }
+        .card-anim:hover {
+            transform: scale(1.015) translateY(-2px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Active Tab Style (Windows 11 Segmented Control) */
+        .tab-active {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            color: #000;
+        }
+        
+        .tab-inactive {
+            color: #666;
+        }
+        .tab-inactive:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Highlight Today */
+        .today-highlight {
+            border: 2px solid #0078D4; /* Windows Blue */
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+        }
+        .today-badge {
+            background-color: #0078D4;
+            color: white;
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 99px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 120, 212, 0.4);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start py-10 px-4">
+
+    <!-- Main Container -->
+    <main class="w-full max-w-3xl mica-container rounded-[20px] p-6 md:p-8 shadow-2xl overflow-hidden relative">
+        
+        <!-- Header -->
+        <header class="text-center mb-8 relative z-10">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-[#1a1a1a]">Lịch Thi Giữa Kỳ II</h1>
+            <p class="text-gray-600 font-medium">Năm học 2025 - 2026</p>
+        </header>
+
+        <!-- Countdown -->
+        <div class="mb-8 flex justify-center">
+            <div class="bg-white/60 backdrop-blur-md border border-white/60 rounded-xl px-6 py-3 flex items-center gap-4 shadow-sm">
+                <div class="flex flex-col items-end">
+                    <span class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Sắp thi môn</span>
+                    <span id="next-subject" class="font-bold text-[#0078D4] text-lg">---</span>
+                </div>
+                <div class="h-8 w-[1px] bg-gray-300"></div>
+                <div class="flex gap-3 text-center">
+                    <div>
+                        <div id="cd-days" class="font-bold text-xl leading-none">00</div>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">Ngày</span>
+                    </div>
+                    <div>
+                        <div id="cd-hours" class="font-bold text-xl leading-none">00</div>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase">Giờ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Switcher (Segmented Control) -->
+        <div class="flex justify-center mb-8">
+            <div class="bg-gray-200/50 p-1 rounded-lg inline-flex relative backdrop-blur-sm">
+                <button onclick="setGrade(7)" id="tab-7" class="px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-active">
+                    Khối 7
+                </button>
+                <button onclick="setGrade(8)" id="tab-8" class="px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-inactive">
+                    Khối 8
+                </button>
+            </div>
+        </div>
+
+        <!-- Schedule Grid -->
+        <div id="schedule-grid" class="grid grid-cols-1 gap-4">
+            <!-- Cards injected by JS -->
+        </div>
+
+        <!-- Footer / Note -->
+        <div class="mt-8 pt-6 border-t border-gray-200/50 flex gap-3 text-sm text-gray-600">
+            <i class="ph-fill ph-info text-xl text-[#0078D4]"></i>
+            <p class="leading-relaxed opacity-80">
+                <span class="font-semibold">Lưu ý:</span> Học sinh thực hiện đúng quy chế thi. Có mặt trước giờ làm bài 15 phút.
+                Các môn không có trong lịch thi sẽ học bình thường theo Thời khóa biểu.
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // DỮ LIỆU LỊCH THI (Cập nhật theo ảnh của bạn tại đây)
+        const schedules = {
+            7: [
+                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45'", shift: "Tiết 1", note: "Theo TKB" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90'", shift: "Tiết 2-3", note: "Tập trung P.Thi" },
+                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90'", shift: "Tiết 2-3", note: "Mang máy tính" },
+                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60'", shift: "Tiết 2", note: "Nghe + Viết" },
+                { date: "2026-03-16", day: "Thứ 2", sub: "Toán", time: "90'", shift: "Tiết 2-3", note: "Đại số + Hình" },
+                { date: "2026-03-17", day: "Thứ 3", sub: "Lịch sử & Địa lý", time: "60'", shift: "Tiết 3", note: "" },
+            ],
+            8: [
+                { date: "2026-03-10", day: "Thứ 3", sub: "Công nghệ", time: "45'", shift: "Tiết 4", note: "Theo TKB" },
+                { date: "2026-03-11", day: "Thứ 4", sub: "Ngữ văn", time: "90'", shift: "Tiết 2-3", note: "Tập trung P.Thi" },
+                { date: "2026-03-12", day: "Thứ 5", sub: "KHTN", time: "90'", shift: "Tiết 2-3", note: "Mang máy tính" },
+                { date: "2026-03-13", day: "Thứ 6", sub: "Tiếng Anh", time: "60'", shift: "Tiết 2", note: "Nghe + Viết" },
+                { date: "2026-03-16", day: "Thứ 2", sub: "Toán", time: "90'", shift: "Tiết 2-3", note: "Mang compa, thước" },
+                { date: "2026-03-17", day: "Thứ 3", sub: "GDCD", time: "45'", shift: "Tiết 1", note: "" },
+            ]
+        };
+
+        let currentGrade = 7;
+
+        function setGrade(grade) {
+            currentGrade = grade;
+            
+            // Update Tab UI
+            document.getElementById('tab-7').className = grade === 7 ? 
+                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-active' : 
+                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-inactive';
+            
+            document.getElementById('tab-8').className = grade === 8 ? 
+                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-active' : 
+                'px-8 py-2 rounded-[6px] text-sm font-semibold transition-all duration-200 tab-inactive';
+
+            renderSchedule();
+            updateCountdown();
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('schedule-grid');
+            const data = schedules[currentGrade];
+            const today = new Date().toISOString().split('T')[0];
+            
+            let html = '';
+            
+            data.forEach(item => {
+                const isToday = item.date === today;
+                
+                // Format Date: 2026-03-10 -> 10/03
+                const d = item.date.split('-');
+                const displayDate = `${d[2]}/${d[1]}`;
+
+                html += `
+                <div class="mica-card rounded-xl p-4 flex items-center justify-between gap-4 card-anim ${isToday ? 'today-highlight' : ''}">
+                    ${isToday ? '<div class="today-badge">HÔM NAY</div>' : ''}
+                    
+                    <!-- Column 1: Date -->
+                    <div class="flex flex-col items-center justify-center min-w-[60px] border-r border-gray-200 pr-4">
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">${item.day}</span>
+                        <span class="text-2xl font-bold text-[#0078D4]">${displayDate}</span>
+                    </div>
+
+                    <!-- Column 2: Subject -->
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-gray-800">${item.sub}</h3>
+                        ${item.note ? `<div class="text-xs text-gray-500 mt-1 flex items-center gap-1"><i class="ph-fill ph-note-pencil"></i> ${item.note}</div>` : ''}
+                    </div>
+
+                    <!-- Column 3: Time -->
+                    <div class="text-right pl-2">
+                        <div class="inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md mb-1">
+                            <i class="ph-bold ph-clock text-[#0078D4] text-xs"></i>
+                            <span class="text-xs font-semibold">${item.time}</span>
+                        </div>
+                        <div class="text-xs font-medium text-gray-600">${item.shift}</div>
+                    </div>
+                </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateCountdown() {
+            const data = schedules[currentGrade];
+            const now = new Date();
+            
+            // Find next exam (exam start time assumed 07:00 for simplicity)
+            const nextExam = data.find(item => new Date(item.date + 'T07:00:00') > now);
+
+            if (!nextExam) {
+                document.getElementById('next-subject').innerText = "Hoàn thành";
+                document.getElementById('cd-days').innerText = "00";
+                document.getElementById('cd-hours').innerText = "00";
+                return;
+            }
+
+            document.getElementById('next-subject').innerText = nextExam.sub;
+            const target = new Date(nextExam.date + 'T07:00:00');
+            const diff = target - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+            document.getElementById('cd-days').innerText = days.toString().padStart(2, '0');
+            document.getElementById('cd-hours').innerText = hours.toString().padStart(2, '0');
+        }
+
+        // Init
+        setGrade(7);
+        setInterval(updateCountdown, 60000); // Update every minute
+    </script>
+</body>
+</html>
