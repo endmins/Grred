@@ -107,8 +107,11 @@
         }
 
         @media (max-width: 1024px) { .liquid-bg { display: none; } }
+        
+        /* Prevent text selection on long press egg */
+        #next-exam-section { user-select: none; -webkit-user-select: none; }
     </style>
-    <!-- Confetti Library for Easter Egg -->
+    <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -131,7 +134,7 @@
 
     <main class="max-w-3xl mx-auto px-4">
         
-        <section class="apple-glass p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <section class="apple-glass p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6" id="next-exam-section">
             <div class="text-center md:text-left">
                 <span class="text-[11px] font-bold uppercase tracking-widest text-secondary block mb-1 opacity-60">Môn thi tiếp theo</span>
                 <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
@@ -176,7 +179,7 @@
                 </a>
             </div>
             
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary">© 2026 Collaboration Edition</p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary" id="quote-text">© 2026 Collaboration Edition</p>
         </footer>
     </main>
 
@@ -210,21 +213,12 @@
                 events: {
                     'onReady': (event) => {
                         event.target.playVideo();
-                        document.addEventListener('click', () => {
-                            if (!isPlaying) toggleMusic();
-                            // Trigger Motion Permission for iOS
-                            if (typeof DeviceMotionEvent.requestPermission === 'function') {
-                                DeviceMotionEvent.requestPermission().catch(console.error);
-                            }
-                        }, { once: true });
+                        document.addEventListener('click', () => { if (!isPlaying) toggleMusic(); }, { once: true });
                     },
                     'onStateChange': (event) => {
                         const icon = document.getElementById('play-icon');
-                        if (event.data === YT.PlayerState.PLAYING) {
-                            isPlaying = true; icon.className = 'ph-fill ph-pause text-xl';
-                        } else {
-                            isPlaying = false; icon.className = 'ph-fill ph-play text-xl';
-                        }
+                        if (event.data === YT.PlayerState.PLAYING) { isPlaying = true; icon.className = 'ph-fill ph-pause text-xl'; }
+                        else { isPlaying = false; icon.className = 'ph-fill ph-play text-xl'; }
                     }
                 }
             }); 
@@ -261,7 +255,7 @@
                 let status = ''; const endTime = new Date(item.date + 'T17:00:00');
                 if (now > endTime) status = 'status-past'; else if (item.date === today) status = 'status-today';
                 const d = item.date.split('-')[2];
-                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
+                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-500">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
             }).join('');
         }
 
@@ -283,19 +277,15 @@
             document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
         }
 
-        // EASTER EGGS LOGIC
-        // 1. Konami Code (PC)
-        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let konamiIndex = 0;
-        document.addEventListener('keydown', (e) => {
-            if (e.key === konamiCode[konamiIndex]) {
-                konamiIndex++;
-                if (konamiIndex === konamiCode.length) {
-                    document.body.classList.toggle('rainbow-blobs');
-                    konamiIndex = 0;
-                }
-            } else { konamiIndex = 0; }
-        });
+        // --- NEW EASTER EGGS LOGIC ---
+        
+        // 1. Long Press on Countdown (Mobile/PC)
+        let holdTimer;
+        const examSection = document.getElementById('next-exam-section');
+        examSection.addEventListener('mousedown', () => { holdTimer = setTimeout(() => document.body.classList.toggle('rainbow-blobs'), 2000); });
+        examSection.addEventListener('mouseup', () => clearTimeout(holdTimer));
+        examSection.addEventListener('touchstart', () => { holdTimer = setTimeout(() => document.body.classList.toggle('rainbow-blobs'), 2000); });
+        examSection.addEventListener('touchend', () => clearTimeout(holdTimer));
 
         // 2. 7-Clicks on Footer (Confetti)
         let clickCount = 0;
@@ -307,34 +297,27 @@
             }
         });
 
-        // 3. Shake Egg (Mobile) - Added Permission request on first click
-        let lastShake = 0;
-        window.addEventListener('devicemotion', (e) => {
-            let acc = e.accelerationIncludingGravity || e.acceleration;
-            if (!acc) return;
-            let total = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
-            if (total > 25) { // Sensitivity lowered slightly
-                let now = Date.now();
-                if (now - lastShake > 2000) {
-                    document.body.classList.toggle('rainbow-blobs');
-                    lastShake = now;
-                }
+        // 3. Late Night / Midnight Egg (00:00 - 05:00)
+        function checkMidnight() {
+            const hours = new Date().getHours();
+            if (hours >= 0 && hours < 5) {
+                document.getElementById('quote-text').innerText = "Ngủ đi các thiên tài 7A4, mai còn đi thi! 😴";
             }
+        }
+
+        // 4. Konami Code (PC)
+        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) { document.body.classList.toggle('rainbow-blobs'); konamiIndex = 0; }
+            } else { konamiIndex = 0; }
         });
 
-        // 4. Triple Tap Backup (Mobile)
-        let tapCount = 0;
-        document.getElementById('progress-label').addEventListener('click', () => {
-            tapCount++;
-            setTimeout(() => { tapCount = 0; }, 500);
-            if (tapCount === 3) {
-                document.body.classList.toggle('rainbow-blobs');
-                tapCount = 0;
-            }
-        });
-
-        render(); updateCountdown(); updateProgress();
+        render(); updateCountdown(); updateProgress(); checkMidnight();
         setInterval(updateCountdown, 1000);
+        setInterval(checkMidnight, 60000);
     </script>
 </body>
 </html>
