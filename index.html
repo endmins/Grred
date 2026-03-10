@@ -10,7 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         :root {
-            /* DARK MODE (DEFAULT) */
             --glass-bg: rgba(20, 20, 22, 0.82);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-primary: #ffffff;
@@ -23,7 +22,6 @@
         }
 
         body.light-mode {
-            /* LIGHT MODE FIX */
             --glass-bg: rgba(255, 255, 255, 0.92);
             --glass-border: rgba(0, 0, 0, 0.08);
             --text-primary: #000000;
@@ -32,7 +30,6 @@
             --border-sep: rgba(0, 0, 0, 0.1);
         }
 
-        /* PROTECTION STYLES */
         * { -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
 
         body {
@@ -45,11 +42,8 @@
             min-height: 100vh; overflow-x: hidden;
         }
 
-        /* RAINBOW MODE */
         body.rainbow-mode { animation: rainbow-anim 8s infinite linear; }
         @keyframes rainbow-anim { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-
-        /* FLIP MODE */
         body.flip-mode { transform: rotate(180deg); }
 
         .apple-glass {
@@ -61,7 +55,6 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* LIQUID GLASS EFFECT FOR SYSTEM BUTTON */
         .liquid-glass-btn {
             background: rgba(10, 132, 255, 0.15);
             backdrop-filter: blur(20px) saturate(150%);
@@ -83,136 +76,92 @@
         .music-pop { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; z-index: 1000; padding: 12px 20px; }
 
         .liquid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: url(#goo); opacity: 0.4; pointer-events: none; }
-        .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #ff00ea); border-radius: 50%; transition: filter 1s ease; }
+        .blob { position: absolute; width: 450px; height: 450px; background: linear-gradient(135deg, var(--blue-box), #ff00ea); border-radius: 50%; }
 
         @media (max-width: 1024px) { .liquid-bg { display: none; } }
-        #next-exam-section { cursor: pointer; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body oncontextmenu="return false;">
 
-    <script>
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) || (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0))) return false;
-        };
-    </script>
-
     <div class="liquid-bg">
         <div class="blob" id="b1" style="top: 10%; left: 10%;"></div>
         <div class="blob" id="b2" style="bottom: 10%; right: 15%; width: 550px; height: 550px; background: #60cdff;"></div>
-        <div class="blob" id="b3" style="top: 40%; left: 40%; width: 300px; height: 300px;"></div>
     </div>
 
     <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
         <defs><filter id="goo"><feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" /><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" /></filter></defs>
     </svg>
 
-    <nav class="max-w-4xl mx-auto flex justify-end p-6 md:p-10">
+    <nav class="max-w-4xl mx-auto flex justify-end p-6">
         <div onclick="toggleTheme()" class="w-12 h-12 apple-glass flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
             <i class="ph-bold ph-moon-stars text-xl" id="theme-icon"></i>
         </div>
     </nav>
 
     <main class="max-w-3xl mx-auto px-4">
-        <section class="apple-glass p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6" id="next-exam-section">
+        <section class="apple-glass p-8 md:p-10 mb-10 flex flex-col md:flex-row items-center justify-between gap-8" id="next-exam-section">
             <div class="text-center md:text-left">
-                <span class="text-[11px] font-bold uppercase tracking-widest text-secondary block mb-1 opacity-60">Môn thi tiếp theo</span>
-                <h3 id="next-subject" class="text-2xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
+                <span class="text-xs md:text-sm font-bold uppercase tracking-widest text-secondary block mb-2 opacity-60">Môn thi tiếp theo</span>
+                <h3 id="next-subject" class="text-3xl md:text-4xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
             </div>
-            <div class="flex gap-6 items-center">
+            <div class="flex gap-4 md:gap-8 items-center">
                 <div class="text-center">
-                    <div id="cd-days" class="text-4xl font-extrabold">00</div>
-                    <span class="text-[9px] uppercase font-bold opacity-40">Ngày</span>
+                    <div id="cd-days" class="text-5xl md:text-6xl font-extrabold">00</div>
+                    <span class="text-[10px] md:text-xs uppercase font-bold opacity-40">Ngày</span>
                 </div>
-                <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
+                <div class="w-[1px] h-12 md:h-16 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
-                    <div id="cd-hours" class="text-4xl font-extrabold">00</div>
-                    <span class="text-[9px] uppercase font-bold opacity-40">Giờ</span>
+                    <div id="cd-hours" class="text-5xl md:text-6xl font-extrabold">00</div>
+                    <span class="text-[10px] md:text-xs uppercase font-bold opacity-40">Giờ</span>
                 </div>
-                <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>
+                <div class="w-[1px] h-12 md:h-16 bg-gray-400 opacity-20"></div>
                 <div class="text-center">
-                    <div id="cd-mins" class="text-4xl font-extrabold">00</div>
-                    <span class="text-[9px] uppercase font-bold opacity-40">Phút</span>
+                    <div id="cd-mins" class="text-5xl md:text-6xl font-extrabold">00</div>
+                    <span class="text-[10px] md:text-xs uppercase font-bold opacity-40">Phút</span>
                 </div>
-                <div class="w-[1px] h-10 bg-gray-400 opacity-20"></div>                
+                <div class="w-[1px] h-12 md:h-16 bg-gray-400 opacity-20"></div>                
                 <div class="text-center">
-                    <div id="cd-secs" class="text-4xl font-extrabold">00</div>
-                    <span class="text-[9px] uppercase font-bold opacity-40">Giây</span>
+                    <div id="cd-secs" class="text-5xl md:text-6xl font-extrabold text-blue-500">00</div>
+                    <span class="text-[10px] md:text-xs uppercase font-bold opacity-40">Giây</span>
                 </div>
             </div>
         </section>
         
         <div class="max-w-sm mx-auto mb-12">
-            <div class="flex justify-between items-center mb-2 px-1">
-                <span class="text-[10px] font-black uppercase tracking-widest opacity-50 text-secondary" id="progress-label" style="cursor: pointer;">Tiến độ kỳ thi</span>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-[10px] font-black uppercase tracking-widest opacity-50 text-secondary" id="progress-label">Tiến độ kỳ thi</span>
                 <span id="progress-text" class="text-[12px] font-black" style="color: #ffcc00;">0%</span>
             </div>
             <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
         </div>
 
-        <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-40"></div>
+        <div id="schedule-grid" class="grid grid-cols-1 gap-4 mb-32"></div>
 
         <footer class="text-center pb-48 opacity-60">
-            <div class="h-[1px] w-12 bg-gray-400 opacity-20 mx-auto mb-8"></div>
             <div class="flex flex-col items-center gap-4">
                 <h2 class="text-2xl font-black tracking-tighter" id="credit-7a4">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
+                <a href="low-end.html" class="px-4 py-2 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase border border-red-500/20">LAG? Chuyển bản Lite</a>
                 
-                <a href="low-end.html" class="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase border border-red-500/20 hover:bg-red-500/20 transition-all">
-                    <i class="ph-bold ph-lightning"></i> LAG? Bấm để vào website tối ưu
-                </a>
-
-                <a href="https://hlthcs.vercel.app" class="liquid-glass-btn flex items-center gap-2 px-6 py-3 mt-4 text-[13px] font-black uppercase text-white hover:scale-105 hover:bg-[rgba(10,132,255,0.25)] transition-all cursor-pointer">
+                <a href="https://hlthcs.vercel.app" class="liquid-glass-btn flex items-center gap-2 px-6 py-3 mt-4 text-[13px] font-black uppercase text-white hover:scale-105 transition-all">
                     <i class="ph-bold ph-gear text-lg"></i> System
                 </a>
             </div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40 text-secondary" id="quote-text">© 2026 Coni </p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] mt-8 opacity-40" id="quote-text">© 2026 Coni </p>
         </footer>
     </main>
 
-    <div class="music-pop apple-glass flex items-center justify-between shadow-2xl">
+    <div class="music-pop apple-glass flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <div class="w-11 h-11 rounded-xl bg-[var(--blue-box)] flex items-center justify-center text-white shadow-lg animate-pulse">
-                <i class="ph-fill ph-music-notes text-lg"></i>
-            </div>
-            <div>
-                <h4 class="text-[13px] font-bold leading-none mb-1 text-primary">Học đi.</h4>
-                <p class="text-[10px] opacity-50 italic text-secondary">Coni • Surface Stud.</p>
-            </div>
+            <div class="w-11 h-11 rounded-xl bg-[var(--blue-box)] flex items-center justify-center text-white shadow-lg animate-pulse"><i class="ph-fill ph-music-notes"></i></div>
+            <div><h4 class="text-[13px] font-bold">Học đi.</h4><p class="text-[10px] opacity-50 italic">Coni • Surface Stud.</p></div>
         </div>
-        <button onclick="toggleMusic()" class="w-10 h-10 flex items-center justify-center bg-black/5 dark:bg-white/10 rounded-full">
-            <i class="ph-fill ph-play text-xl" id="play-icon" style="color: var(--blue-box);"></i>
-        </button>
+        <button onclick="toggleMusic()"><i class="ph-fill ph-play text-xl" id="play-icon" style="color: var(--blue-box);"></i></button>
     </div>
 
     <div id="yt-player"></div>
 
     <script>
-        if (window.innerWidth > 1024) { gsap.to(".blob", { x: "random(-150, 150)", y: "random(-150, 150)", duration: "random(12, 22)", repeat: -1, yoyo: true, ease: "sine.inOut", stagger: 2 }); }
-        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        var player;
-        function onYouTubeIframeAPIReady() { 
-            player = new YT.Player('yt-player', { 
-                height: '0', width: '0', videoId: 'yJ6Lbsmb1lY',
-                playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'yJ6Lbsmb1lY' },
-                events: {
-                    'onReady': (event) => {
-                        event.target.playVideo();
-                        document.addEventListener('click', () => { if (!isPlaying) toggleMusic(); }, { once: true });
-                    },
-                    'onStateChange': (event) => {
-                        const icon = document.getElementById('play-icon');
-                        if (event.data === YT.PlayerState.PLAYING) { isPlaying = true; icon.className = 'ph-fill ph-pause text-xl'; }
-                        else { isPlaying = false; icon.className = 'ph-fill ph-play text-xl'; }
-                    }
-                }
-            }); 
-        }
-        let isPlaying = false;
-        function toggleMusic() { const icon = document.getElementById('play-icon'); if (isPlaying) { player.pauseVideo(); } else { player.playVideo(); } }
-
         const schedules = [
             { date: "2026-03-10", day: "T3", sub: "Công nghệ", time: "14:25 - 15:10", label: "Tiết 2", split: false },
             { date: "2026-03-11", day: "T4", sub: "Lịch sử", time: "14:25 - 15:10", label: "Tiết 2", split: false },
@@ -224,22 +173,26 @@
             { date: "2026-03-19", day: "T5", sub: "Toán 7", time: "13:30 - 15:00", label: "90 phút", split: true },
         ];
 
-        function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-mode');
-            const icon = document.getElementById('theme-icon');
-            icon.className = isLight ? 'ph-bold ph-moon-stars text-xl' : 'ph-bold ph-sun-dim text-xl';
-            document.body.style.backgroundImage = isLight ? "url('2.png')" : "url('1.png')";
-        }
-
         function render() {
             const grid = document.getElementById('schedule-grid');
             const now = new Date(); const today = now.toISOString().split('T')[0];
             grid.innerHTML = schedules.map(item => {
                 let status = ''; const endTime = new Date(item.date + 'T17:00:00');
                 if (now > endTime) status = 'status-past'; else if (item.date === today) status = 'status-today';
-                const d = item.date.split('-')[2];
-                return `<div class="apple-glass p-5 flex items-center justify-between board-sheet ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${d}</span></div></div><div><h4 class="font-extrabold text-lg leading-tight text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50 text-secondary">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div>${item.date === today ? '<span class="bg-blue-500 text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg">HÔM NAY</span>' : ''}</div>`;
+                return `<div class="apple-glass p-5 flex items-center justify-between ${status}"><div class="flex items-center gap-5"><div class="date-container"><div class="date-blue"><span class="text-[9px] font-black text-white/60 uppercase">${item.day}</span><span class="text-2xl font-black text-white">${item.date.split('-')[2]}</span></div></div><div><h4 class="font-extrabold text-lg text-primary">${item.sub}</h4><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase opacity-50">${item.label}</span>${item.split ? '<span class="text-[9px] font-bold text-blue-500">📍 CHIA PHÒNG</span>' : '<span class="text-[9px] font-bold text-green-600">🏠 TẠI LỚP</span>'}</div><div class="text-2xl font-black tracking-tighter mt-1" style="color: #ffcc00;">${item.time}</div></div></div></div>`;
             }).join('');
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const next = schedules.find(item => new Date(`${item.date}T${item.time.split(' - ')[0]}:00`) > now);
+            if (!next) { document.getElementById('next-subject').innerText = "Kỳ thi kết thúc!"; return; }
+            document.getElementById('next-subject').innerText = next.sub;
+            const diff = new Date(`${next.date}T${next.time.split(' - ')[0]}:00`) - now;
+            document.getElementById('cd-days').innerText = Math.floor(diff / 864e5).toString().padStart(2, '0');
+            document.getElementById('cd-hours').innerText = Math.floor((diff % 864e5) / 36e5).toString().padStart(2, '0');
+            document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
+            document.getElementById('cd-secs').innerText = Math.floor((diff % 6e4) / 1000).toString().padStart(2, '0');
         }
 
         function updateProgress() {
@@ -248,90 +201,16 @@
             const p = Math.round((count / schedules.length) * 100);
             document.getElementById('progress-bar').style.width = p + '%';
             document.getElementById('progress-text').innerText = p + '%';
-            
-            // AUTOMATIC END CHECK
-            if (count === schedules.length) {
-                alert("Giữa kì 2 đã kết thúc, hãy chờ đợi cho đến khi Coni và Surface Stud update!");
-                window.location.href = "https://halong.vercel.app/dfk2";
-            }
         }
 
-        function updateCountdown() {
-    const now = new Date();
-    
-    // Tự động tìm môn tiếp theo và lấy giờ bắt đầu chính xác của môn đó
-    const next = schedules.find(item => {
-        const startTime = item.time.split(' - ')[0]; // Lấy giờ bắt đầu (VD: 14:25)
-        return new Date(`${item.date}T${startTime}:00`) > now;
-    });
-
-    if (!next) { 
-        document.getElementById('next-subject').innerText = "Kỳ thi kết thúc!"; 
-        document.getElementById('cd-days').innerText = "00";
-        document.getElementById('cd-hours').innerText = "00";
-        document.getElementById('cd-mins').innerText = "00";
-        document.getElementById('cd-secs').innerText = "00";
-        return; 
-    }
-
-    document.getElementById('next-subject').innerText = next.sub;
-    
-    // Tính toán thời gian chênh lệch
-    const startTime = next.time.split(' - ')[0];
-    const diff = new Date(`${next.date}T${startTime}:00`) - now;
-
-    // Cập nhật Ngày, Giờ, Phút, và Giây
-    document.getElementById('cd-days').innerText = Math.floor(diff / 864e5).toString().padStart(2, '0');
-    document.getElementById('cd-hours').innerText = Math.floor((diff % 864e5) / 36e5).toString().padStart(2, '0');
-    document.getElementById('cd-mins').innerText = Math.floor((diff % 36e5) / 6e4).toString().padStart(2, '0');
-    document.getElementById('cd-secs').innerText = Math.floor((diff % 6e4) / 1000).toString().padStart(2, '0'); // Đã thêm phần đếm giây
-}
-
-
-        const triggerRainbow = () => { document.body.classList.toggle('rainbow-mode'); };
-        const triggerFlip = () => { document.body.classList.toggle('flip-mode'); };
-        let holdTimer;
-        
-        document.getElementById('next-exam-section').addEventListener('mousedown', () => holdTimer = setTimeout(triggerRainbow, 2000));
-        document.getElementById('next-exam-section').addEventListener('mouseup', () => clearTimeout(holdTimer));
-        document.getElementById('next-exam-section').addEventListener('touchstart', () => holdTimer = setTimeout(triggerRainbow, 2000));
-        document.getElementById('next-exam-section').addEventListener('touchend', () => clearTimeout(holdTimer));
-        
-        document.getElementById('credit-7a4').addEventListener('click', (e) => {
-            window.clickCnt = (window.clickCnt || 0) + 1;
-            if (window.clickCnt === 7) { confetti({ particleCount: 150, spread: 70, origin: { y: 0.8 } }); window.clickCnt = 0; }
-        });
-        document.getElementById('credit-7a4').addEventListener('mousedown', () => holdTimer = setTimeout(() => {
-            confetti({ particleCount: 100, spread: 100, origin: { y: 0.8 }, scalar: 2, shapes: ['text'], shapeOptions: { text: { value: ['💵', '💰', '7A4'] } } });
-        }, 2000));
-        document.getElementById('credit-7a4').addEventListener('touchstart', () => holdTimer = setTimeout(() => {
-            confetti({ particleCount: 100, spread: 100, origin: { y: 0.8 }, scalar: 2, shapes: ['text'], shapeOptions: { text: { value: ['💵', '💰', '7A4'] } } });
-        }, 2000));
-        
-        // FIXED TAP COUNT BUG HERE
-        document.getElementById('progress-label').addEventListener('click', () => {
-            window.tapCnt = (window.tapCnt || 0) + 1;
-            setTimeout(() => window.tapCnt = 0, 1000);
-            if (window.tapCnt === 5) {
-                triggerFlip();
-                window.tapCnt = 0;
-            }
-        });
-
-        function checkMidnight() {
-            const h = new Date().getHours();
-            if (h >= 0 && h < 5) document.getElementById('quote-text').innerText = "Ngủ đi các thiên tài 7A4, mai còn đi thi! 😴";
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            document.getElementById('theme-icon').className = isLight ? 'ph-bold ph-moon-stars text-xl' : 'ph-bold ph-sun-dim text-xl';
+            document.body.style.backgroundImage = isLight ? "url('2.png')" : "url('1.png')";
         }
 
-        let konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let kIdx = 0; let inputKeys = "";
-        document.addEventListener('keydown', (e) => {
-            if (e.key === konami[kIdx]) { kIdx++; if (kIdx === konami.length) { triggerRainbow(); kIdx = 0; } } else { kIdx = 0; }
-            inputKeys += e.key; if (inputKeys.includes("flip")) { triggerFlip(); inputKeys = ""; }
-        });
-
-        render(); updateCountdown(); updateProgress(); checkMidnight();
-        setInterval(updateCountdown, 1000); setInterval(checkMidnight, 60000);
+        render(); updateCountdown(); updateProgress();
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
