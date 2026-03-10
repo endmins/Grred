@@ -6,44 +6,28 @@
     <title>7A4 - CONI | Lite Mode</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-user-drag: none; }
-        body { font-family: sans-serif; background: #f4f4f9; color: #333; padding: 20px; }
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; color: #333; }
         .card { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .date-box { background: #0071e3; color: #fff; padding: 10px; border-radius: 10px; text-align: center; min-width: 50px; }
-        .time { color: #b28900; font-weight: bold; font-size: 1.2em; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .bar-bg { background: #ddd; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
-        .bar-fill { background: #ffcc00; height: 100%; width: 0%; transition: width 1s ease-in-out; }
-        .btn-back { display: block; text-align: center; color: #0071e3; text-decoration: none; margin-top: 20px; font-weight: bold; }
+        .date-box { background: #0071e3; color: #fff; padding: 8px; border-radius: 8px; text-align: center; min-width: 50px; }
+        .time { color: #b28900; font-weight: bold; }
+        .bar-bg { background: #ddd; height: 12px; border-radius: 6px; overflow: hidden; margin: 15px 0; }
+        .bar-fill { background: #ffcc00; height: 100%; width: 0%; transition: width 1s ease; }
+        .survive-badge { font-size: 10px; font-weight: bold; color: #10b981; border: 1px solid #10b981; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
-<body oncontextmenu="return false;">
-    <script>
-        document.onkeydown = function(e) {
-            if (e.keyCode == 123 || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) || (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0))) return false;
-        };
-        if (window.location.href.indexOf('.html') > -1 && window.location.protocol !== 'file:') {
-            var newUrl = window.location.href.split('.html')[0];
-            window.history.replaceState(null, '', newUrl);
-        }
-    </script>
-
-    <div class="header">
-        <h1 style="font-weight: 900;">Lịch Thi (Lite)</h1>
-        <p style="opacity: 0.6;">Dành cho thiết bị cấu hình thấp</p>
-    </div>
-
-    <div id="progress-area" style="max-width: 300px; margin: 0 auto 30px;">
-        <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
-        <p id="progress-text" style="text-align: center; font-size: 12px; font-weight: 900; color: #ffcc00;">0% HOÀN THÀNH</p>
+<body>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h1 style="font-weight: 900; font-size: 1.4rem;">Lịch Thi Giữa Kì 2 (Lite)</h1>
+        <div style="max-width: 300px; margin: 20px auto;">
+            <div class="bar-bg"><div id="progress-bar" class="bar-fill"></div></div>
+            <p id="progress-text" style="font-weight: bold; color: #ffcc00; font-size: 14px;">0% HOÀN THÀNH</p>
+        </div>
     </div>
 
     <div id="list"></div>
-
-    <a href="index.html" class="btn-back">← Quay lại bản High-end</a>
+    <a href="index.html" style="display: block; text-align: center; margin-top: 20px; color: #0071e3; text-decoration: none; font-weight: bold;">← Quay lại bản chính</a>
 
     <script>
-        // Đồng bộ dữ liệu 100% với bản High-end
         const data = [
             { date: "2026-03-10", sub: "Công nghệ", time: "14:25 - 15:10", day: "T3" },
             { date: "2026-03-11", sub: "Lịch sử", time: "14:25 - 15:10", day: "T4" },
@@ -63,28 +47,26 @@
             const isPast = now > new Date(item.date + 'T17:00:00');
             if(isPast) finished++;
             return `
-                <div class="card" style="${isPast ? 'opacity: 0.4; filter: grayscale(1);' : ''}">
-                    <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="card" style="${isPast ? 'opacity: 0.5;' : ''}">
+                    <div style="display: flex; gap: 12px; align-items: center;">
                         <div class="date-box">
-                            <div style="font-size: 0.7em;">${item.day}</div>
-                            <div style="font-size: 1.2em; font-weight: bold;">${item.date.split('-')[2]}</div>
+                            <div style="font-size: 10px;">${item.day}</div>
+                            <div style="font-size: 18px; font-weight: bold;">${item.date.split('-')[2]}</div>
                         </div>
                         <div>
-                            <div style="font-weight: 800;">${item.sub}</div>
+                            <div style="font-weight: bold;">${item.sub}</div>
                             <div class="time">${item.time}</div>
                         </div>
                     </div>
-                </div>
-            `;
+                    ${isPast ? '<span class="survive-badge">SURVIVED 🛡️</span>' : ''}
+                </div>`;
         }).join('');
 
         const p = Math.round((finished / data.length) * 100);
-        
-        // Timeout một xíu để hiệu ứng transition của thanh chạy mượt hơn lúc load
         setTimeout(() => {
             document.getElementById('progress-bar').style.width = p + '%';
             document.getElementById('progress-text').innerText = p + '% HOÀN THÀNH';
-        }, 100);
+        }, 200);
     </script>
 </body>
 </html>
