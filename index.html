@@ -40,6 +40,17 @@
             color: var(--text-primary);
             transition: all 0.5s ease;
             min-height: 100vh; overflow-x: hidden;
+            /* Chuẩn bị cho hiệu ứng hút */
+            transform-origin: center center;
+        }
+
+        /* HIỆU ỨNG HÚT VÀO PORTAL */
+        body.sucked-in {
+            transition: transform 1.5s cubic-bezier(0.5, 0, 0, 1), filter 1.5s ease, opacity 1.5s ease;
+            transform: scale(15) rotate(10deg);
+            filter: blur(20px) brightness(2);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .apple-glass {
@@ -66,6 +77,18 @@
             border: 1px solid rgba(10, 132, 255, 0.4);
             box-shadow: 0 8px 32px rgba(10, 132, 255, 0.2);
             border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Hiệu ứng nháy sáng cho nút System khi bấm */
+        .liquid-glass-btn.btn-active {
+            animation: btnFlash 0.5s ease forwards;
+        }
+        @keyframes btnFlash {
+            0% { box-shadow: 0 0 0 rgba(10, 132, 255, 0.5); background: rgba(10, 132, 255, 0.15); }
+            50% { box-shadow: 0 0 50px rgba(10, 132, 255, 1); background: rgba(10, 132, 255, 0.8); color: #fff; transform: scale(1.1); }
+            100% { box-shadow: 0 0 100vw rgba(10, 132, 255, 1); background: #fff; }
         }
 
         .bar-bg { background: rgba(120, 120, 128, 0.15); height: 8px; border-radius: 10px; overflow: hidden; }
@@ -87,6 +110,7 @@
 <body oncontextmenu="return false;">
 
     <audio id="tickAudio" loop><source src="https://www.soundjay.com/clock/clock-ticking-2.mp3" type="audio/mpeg"></audio>
+    <audio id="systemAudio" preload="auto"><source src="https://www.soundjay.com/mechanical/sounds/machine-processing-1.mp3" type="audio/mpeg"></audio>
 
     <nav class="max-w-4xl mx-auto flex justify-end p-6">
         <div onclick="toggleTheme()" class="w-12 h-12 apple-glass flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
@@ -102,7 +126,7 @@
 
             <div class="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="text-center md:text-left">
-                    <span class="text-xs md:text-sm font-bold uppercase tracking-widest text-secondary block mb-2 opacity-60">Trạng thái</span>
+                    <span class="text-xs md:text-sm font-bold uppercase tracking-widest text-secondary block mb-2 opacity-60">Sắp vào học</span>
                     <h3 id="next-subject" class="text-3xl md:text-4xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
                 </div>
                 <div class="flex gap-4 md:gap-8 items-center" id="countdown-wrapper">
@@ -144,7 +168,7 @@
                 <h2 class="text-2xl font-black tracking-tighter" id="credit-7a4" class="cursor-pointer">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
                 <a href="low-end.html" class="px-4 py-2 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase border border-red-500/20">LAG? Chuyển bản Lite</a>
                 
-                <a href="https://hlthcs.vercel.app" class="liquid-glass-btn flex items-center gap-2 px-6 py-3 mt-4 text-[13px] font-black uppercase text-white hover:scale-105 transition-all">
+                <a href="https://hlthcs.vercel.app" id="system-btn" class="liquid-glass-btn flex items-center gap-2 px-6 py-3 mt-4 text-[13px] font-black uppercase text-white hover:scale-105 transition-all">
                     <i class="ph-bold ph-gear text-lg"></i> System
                 </a>
             </div>
@@ -206,7 +230,6 @@
             const wrapper = document.getElementById('countdown-wrapper');
             const secText = document.getElementById('cd-secs');
 
-            // Tìm môn thi tiếp theo (bao gồm cả môn ngày hôm nay nếu chưa tới 13h)
             const next = schedules.find(item => new Date(`${item.date}T13:00:00`) > now);
 
             if (!next) {
@@ -220,7 +243,7 @@
             document.getElementById('next-subject').innerText = next.sub;
             const diff = new Date(`${next.date}T13:00:00`) - now;
 
-            // Stress Mode (dưới 1 tiếng)
+            // Stress Mode
             if (diff < 3600000 && diff > 0) {
                 wrapper.classList.add('stress-mode');
                 secText.classList.remove('text-blue-500');
@@ -244,6 +267,33 @@
             document.getElementById('progress-bar').style.width = p + '%';
             document.getElementById('progress-text').innerText = p + '%';
         }
+
+        // --- SỰ KIỆN NÚT SYSTEM ---
+        document.getElementById('system-btn').addEventListener('click', function(e) {
+            e.preventDefault(); // Chặn việc nhảy trang luôn
+            const targetUrl = this.getAttribute('href');
+            const sysAudio = document.getElementById('systemAudio');
+            
+            // 1. Phát âm thanh CPU Loading
+            sysAudio.play().catch(() => { console.log("Trình duyệt chặn autoplay âm thanh."); });
+            
+            // 2. Tắt nhạc Youtube và nhạc đếm ngược (nếu đang bật) để nghe rõ tiếng CPU
+            if (player && typeof player.pauseVideo === 'function') player.pauseVideo();
+            document.getElementById('tickAudio').pause();
+
+            // 3. Kích hoạt hiệu ứng sáng chói ở nút
+            this.classList.add('btn-active');
+
+            // 4. Kích hoạt hiệu ứng hút lỗ đen cho toàn bộ trang
+            setTimeout(() => {
+                document.body.classList.add('sucked-in');
+            }, 150); // Delay nhẹ một nhịp cho nút kịp nháy sáng
+
+            // 5. Chuyển trang sau khi hoàn thành animation (1.5 giây)
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 1500);
+        });
 
         // Easter Egg Functions
         function getLuck() {
@@ -271,7 +321,6 @@
             document.body.style.backgroundImage = isLight ? "url('2.png')" : "url('1.png')";
         }
 
-        // YouTube Audio
         var player;
         function onYouTubeIframeAPIReady() { 
             player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'yJ6Lbsmb1lY', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'yJ6Lbsmb1lY' }}); 
