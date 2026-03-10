@@ -51,6 +51,16 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
         }
 
+        /* STRESS VISUALIZER EFFECT */
+        .stress-mode { color: #ff3b30 !important; animation: heartBeat 1s infinite !important; }
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
+        }
+
         .liquid-glass-btn {
             background: rgba(10, 132, 255, 0.15);
             backdrop-filter: blur(20px) saturate(150%);
@@ -68,7 +78,6 @@
         .status-past { opacity: 0.45; filter: grayscale(0.8); }
         .status-today { border: 2px solid var(--blue-box) !important; background: rgba(0, 113, 227, 0.05); }
 
-        /* Icon cầu may nhấp nháy */
         .luck-icon { animation: pulse-luck 2s infinite; cursor: pointer; }
         @keyframes pulse-luck { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; } }
 
@@ -77,6 +86,10 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body oncontextmenu="return false;">
+
+    <audio id="tickAudio" loop>
+        <source src="https://www.soundjay.com/clock/clock-ticking-2.mp3" type="audio/mpeg">
+    </audio>
 
     <nav class="max-w-4xl mx-auto flex justify-end p-6">
         <div onclick="toggleTheme()" class="w-12 h-12 apple-glass flex items-center justify-center cursor-pointer hover:scale-105 transition-transform">
@@ -92,10 +105,10 @@
 
             <div class="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div class="text-center md:text-left">
-                    <span class="text-xs md:text-sm font-bold uppercase tracking-widest text-secondary block mb-2 opacity-60">Vào học sau</span>
+                    <span class="text-xs md:text-sm font-bold uppercase tracking-widest text-secondary block mb-2 opacity-60">Sắp vào học</span>
                     <h3 id="next-subject" class="text-3xl md:text-4xl font-extrabold tracking-tight" style="color: var(--blue-box);">Đang tải...</h3>
                 </div>
-                <div class="flex gap-4 md:gap-8 items-center">
+                <div class="flex gap-4 md:gap-8 items-center" id="countdown-wrapper">
                     <div class="text-center">
                         <div id="cd-days" class="text-5xl md:text-6xl font-extrabold">00</div>
                         <span class="text-[10px] md:text-xs uppercase font-bold opacity-40">Ngày</span>
@@ -132,8 +145,6 @@
         <footer class="text-center pb-48 opacity-60">
             <div class="flex flex-col items-center gap-4">
                 <h2 class="text-2xl font-black tracking-tighter" id="credit-7a4">7A4 • Coni • <span style="color: var(--blue-box);">Surface Stud.</span></h2>
-                <a href="low-end.html" class="px-4 py-2 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase border border-red-500/20">LAG? Chuyển bản Lite</a>
-                
                 <a href="https://hlthcs.vercel.app" class="liquid-glass-btn flex items-center gap-2 px-6 py-3 mt-4 text-[13px] font-black uppercase text-white hover:scale-105 transition-all">
                     <i class="ph-bold ph-gear text-lg"></i> System
                 </a>
@@ -199,17 +210,32 @@
 
         function updateCountdown() {
             const now = new Date();
-            // Đếm ngược đến 13:00 mỗi ngày thi
             const next = schedules.find(item => new Date(`${item.date}T13:00:00`) > now);
+            const tick = document.getElementById('tickAudio');
+            const wrapper = document.getElementById('countdown-wrapper');
+            const secText = document.getElementById('cd-secs');
             
             if (!next) { 
-                document.getElementById('next-subject').innerText = "Kỳ thi kết thúc!"; 
+                document.getElementById('next-subject').innerText = "Xong rồi!"; 
                 ["cd-days", "cd-hours", "cd-mins", "cd-secs"].forEach(id => document.getElementById(id).innerText = "00");
+                tick.pause();
                 return; 
             }
 
             document.getElementById('next-subject').innerText = next.sub;
-            const diff = new Date(`${next.date}T13:00:00`) - now;
+            const target = new Date(`${next.date}T13:00:00`);
+            const diff = target - now;
+
+            // STRESS VISUALIZER LOGIC
+            if (diff < 3600000 && diff > 0) { // Dưới 1 tiếng
+                wrapper.classList.add('stress-mode');
+                secText.classList.remove('text-blue-500');
+                if (tick.paused) tick.play().catch(() => {});
+            } else {
+                wrapper.classList.remove('stress-mode');
+                secText.classList.add('text-blue-500');
+                tick.pause();
+            }
 
             document.getElementById('cd-days').innerText = Math.floor(diff / 864e5).toString().padStart(2, '0');
             document.getElementById('cd-hours').innerText = Math.floor((diff % 864e5) / 36e5).toString().padStart(2, '0');
@@ -226,15 +252,11 @@
         }
 
         function getLuck() {
-            const wishes = [
-                "Vía thi tốt! 10 điểm về tay 7A4! 🍀",
-                "Trúng tủ! Bình tĩnh làm bài nha! ✨",
-                "Chúc thi môn nào cũng 'out trình' môn đó! 🔥",
-                "Cứ làm hết sức, kết quả sẽ cực 'mlem'! 🏆",
-                "Đừng để bị lừa câu hỏi nhé! 🧠"
-            ];
+            const wishes = ["Vía 10 điểm! 🍀", "Trúng tủ nha! ✨", "7A4 vô đối! 🔥", "Bình tĩnh là thắng! 🧠"];
             alert(wishes[Math.floor(Math.random() * wishes.length)]);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            // Kích hoạt âm thanh sau tương tác người dùng để tránh lỗi trình duyệt chặn autoplay
+            document.getElementById('tickAudio').muted = false;
         }
 
         function toggleTheme() {
